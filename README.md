@@ -9,7 +9,7 @@ rm -rf ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim ~/.config/nvim/lazy
 
 Install nvim
 
-git clone https://github.com/sownteedev/TeVim ~/.config/nvim --depth 1 && nvim
+git clone https://github.com/Theghost6/nvim.git ~/.config/nvim --depth 1 && nvim
 
 Wait for everything to install!
 
