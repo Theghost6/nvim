@@ -1,5 +1,6 @@
 local opts = { noremap = true, silent = true }
 local map = vim.keymap.set
+local keymap = vim.api.nvim_set_keymap
 
 map("n", "<C-a>", "ggVG", opts, { desc = "Select All" })
 map("v", "<C-c>", "y", opts, { desc = "Copy" })
@@ -40,14 +41,18 @@ map("n", "<C-Down>", ":resize -2<CR>", opts, { desc = "Resize Window Down" })
 map("n", "<C-Left>", ":vertical resize +2<CR>", opts, { desc = "Resize Window Left" })
 map("n", "<C-Right>", ":vertical resize -2<CR>", opts, { desc = "Resize Window Right" })
 
-map("i", "<C-j>", "<Down>", opts, { desc = "Move Cursor Down in Insert Mode" })
-map("i", "<C-k>", "<Up>", opts, { desc = "Move Cursor Up in Insert Mode" })
-map("i", "<C-h>", "<Left>", opts, { desc = "Move Cursor Left in Insert Mode" })
-map("i", "<C-l>", "<Right>", opts, { desc = "Move Cursor Right in Insert Mode" })
+map("i", "<M-j>", "<Down>", opts, { desc = "Move Cursor Down in Insert Mode" })
+map("i", "<M-k>", "<Up>", opts, { desc = "Move Cursor Up in Insert Mode" })
+map("i", "<M-h>", "<Left>", opts, { desc = "Move Cursor Left in Insert Mode" })
+map("i", "<M-l>", "<Right>", opts, { desc = "Move Cursor Right in Insert Mode" })
 
-map("n", "<TAB>", "<cmd>TeBufNext<CR>", opts, { desc = "Next Buffer" })
-map("n", "<S-TAB>", "<cmd>TeBufPrev<CR>", opts, { desc = "Previous Buffer" })
+map("n", "<TAB>", "<cmd>bn<CR>", opts, { desc = "Next Buffer" })
+map("n", "<S-TAB>", "<cmd>bp<CR>", opts, { desc = "Previous Buffer" })
 
 map("n", "<Enter>", "<cmd>nohlsearch<CR>", opts, { desc = "Clear Highlight" })
 
 map("n", "<leader>rn", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { silent = true }, { desc = "Rename" })
+
+-- keymap("n", "<F3>", ":!g++ -o %< % && ./%<<CR>",opts)
+keymap("n", "<F3>", [[:term g++ -o %< % && ./%<<CR> ]], opts)
+keymap("n", "<F9>", "<cmd>ToggleTerm size=10 direction=horizontal<cr>", opts)

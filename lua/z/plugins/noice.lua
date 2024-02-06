@@ -4,7 +4,10 @@ return {
 		opts = {
 			timeout = 5000,
 			config = function(config)
-				config.background_colour = "#000000"
+				require("notify").setup({
+					background_colour = "transparent",
+				})
+				config.background_colour = "transparent"
 				config.fps = 30
 				config.icons = {
 					DEBUG = "",
@@ -28,15 +31,7 @@ return {
 	{
 		"folke/noice.nvim",
 		event = "VeryLazy",
-		opts = {
-			-- Thêm các tùy chọn ở đây nếu cần
-			config = function(_, opts)
-				opts.background_color = "#000000"
-				require("notify").setup({
-					background_colour = "#000000",
-				})
-			end,
-		},
+		opts = {},
 		dependencies = {
 			"MunifTanjim/nui.nvim",
 			-- Các phần mở rộng hoặc plugins khác bạn muốn thêm vào đây
