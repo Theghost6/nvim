@@ -56,3 +56,9 @@ map("n", "<leader>rn", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], {
 -- keymap("n", "<F3>", ":!g++ -o %< % && ./%<<CR>",opts)
 keymap("n", "<F3>", [[:term g++ -o %< % && ./%<<CR> ]], opts)
 keymap("n", "<F9>", "<cmd>ToggleTerm size=10 direction=horizontal<cr>", opts)
+-- Mở cửa sổ mới
+map("n", "<leader>s", ":split<CR>", opts)
+map("n", "<leader>v", ":vsplit<CR>", opts)
+map("n", "<leader>q", ":close<CR>", opts)
+-- WhichKey
+map("n", "<leader>w", ":WhichKey<CR>", opts)
