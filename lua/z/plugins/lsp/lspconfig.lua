@@ -3,7 +3,7 @@ return {
 	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
-		{ "antosha417/nvim-lsp-file-operations", config = true },
+		-- { "antosha417/nvim-lsp-file-operations", config = true },
 	},
 	config = function()
 		-- import lspconfig plugin
@@ -92,13 +92,6 @@ return {
 		lspconfig["tailwindcss"].setup({
 			capabilities = capabilities,
 			on_attach = on_attach,
-		})
-
-		-- configure emmet language server
-		lspconfig["emmet_ls"].setup({
-			capabilities = capabilities,
-			on_attach = on_attach,
-			filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
 		})
 
 		-- configure python server
