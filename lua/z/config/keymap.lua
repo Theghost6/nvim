@@ -4,7 +4,7 @@ local keymap = vim.api.nvim_set_keymap
 
 map("n", "<C-a>", "ggVG", opts, { desc = "Select All" })
 map("v", "<C-c>", "y", opts, { desc = "Copy" })
-map("n", "<C-v>", "p", opts, { desc = "Paste" })
+-- map("n", "<C-v>", "p", opts, { desc = "Paste" })
 
 map(
 	"n",
@@ -53,8 +53,9 @@ map("n", "<Enter>", "<cmd>nohlsearch<CR>", opts, { desc = "Clear Highlight" })
 
 map("n", "<leader>rn", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { silent = true }, { desc = "Rename" })
 
--- keymap("n", "<F3>", ":!g++ -o %< % && ./%<<CR>",opts)
-keymap("n", "<F3>", [[:term g++ -o %< % && ./%<<CR> ]], opts)
+keymap("n", "<F3>", ":RunCode<CR>", opts)
+-- keymap("n", "<F3>", [[:term g++ -o %< % && ./%<<CR> ]], opts)
+
 keymap("n", "<F9>", "<cmd>ToggleTerm size=10 direction=horizontal<cr>", opts)
 -- Mở cửa sổ mới
 map("n", "<leader>s", ":split<CR>", opts)

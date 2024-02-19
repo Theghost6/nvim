@@ -3,6 +3,8 @@ return {
 	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
+		"nvimdev/lspsaga.nvim",
+		"ray-x/lsp_signature.nvim",
 		-- { "antosha417/nvim-lsp-file-operations", config = true },
 	},
 	config = function()

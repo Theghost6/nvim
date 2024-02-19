@@ -19,6 +19,7 @@ opt.smartcase = true -- if you include mixed case in your search, assumes you wa
 
 -- cursor line
 opt.cursorline = false -- highlight the current cursor line
+--opt.cursorword = false
 
 -- appearance
 
