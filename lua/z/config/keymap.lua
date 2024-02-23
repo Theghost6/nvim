@@ -48,6 +48,10 @@ map("i", "<M-l>", "<Right>", opts, { desc = "Move Cursor Right in Insert Mode" }
 
 map("n", "<TAB>", "<cmd>bn<CR>", opts, { desc = "Next Buffer" })
 map("n", "<S-TAB>", "<cmd>bp<CR>", opts, { desc = "Previous Buffer" })
+map("n", "<leader>mh", ":wincmd H<CR>", opts, { "Move Left Buffer" })
+map("n", "<leader>ml", ":wincmd L<CR>", opts, { "move Right Buffer" })
+map("n", "<leader>mj", ":wincmd J<CR>", opts, { "move Down Buffer" })
+map("n", "<leader>mk", ":wincmd K<CR>", opts, { "move Up Buffer" })
 
 map("n", "<Enter>", "<cmd>nohlsearch<CR>", opts, { desc = "Clear Highlight" })
 

@@ -8,9 +8,10 @@ return {
 		"hrsh7th/cmp-nvim-lua",
 		"hrsh7th/cmp-path", -- source for file system paths
 		"L3MON4D3/LuaSnip", -- snippet engine
-		-- "rafamadriz/friendly-snippets", -- useful snippets
+		"rafamadriz/friendly-snippets", -- useful snippets
 		"saadparwaiz1/cmp_luasnip", -- for autocompletion
 		"onsails/lspkind.nvim", -- vs-code like pictograms
+		"mattn/emmet-vim",
 	},
 	config = function()
 		local cmp = require("cmp")
@@ -59,6 +60,7 @@ return {
 				{ name = "buffer" }, -- text within current buffer
 				{ name = "path" },
 				{ name = "cmdline" }, -- file system paths
+				{ name = "emmet" },
 			}),
 
 			-- configure lspkind for vs-code like pictograms in completion menu
