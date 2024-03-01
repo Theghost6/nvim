@@ -55,8 +55,6 @@ map("n", "<leader>mk", ":wincmd K<CR>", opts, { "move Up Buffer" })
 
 map("n", "<Enter>", "<cmd>nohlsearch<CR>", opts, { desc = "Clear Highlight" })
 
-map("n", "<leader>rn", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { silent = true }, { desc = "Rename" })
-
 keymap("n", "<F3>", ":RunCode<CR>", opts)
 -- keymap("n", "<F3>", [[:term g++ -o %< % && ./%<<CR> ]], opts)
 
@@ -64,6 +62,9 @@ keymap("n", "<F9>", "<cmd>ToggleTerm size=10 direction=horizontal<cr>", opts)
 -- Mở cửa sổ mới
 map("n", "<leader>s", ":split<CR>", opts)
 map("n", "<leader>v", ":vsplit<CR>", opts)
-map("n", "<leader>q", ":close<CR>", opts)
+map("n", "<leader>q", ":close<CR>", opts, { "close split" })
+
+--close Buffer
+map("n", "<leader>bd", ":bd<CR>", opts, { "Close Buffer" })
 -- WhichKey
 map("n", "<leader>w", ":WhichKey<CR>", opts)

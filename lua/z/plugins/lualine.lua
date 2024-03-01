@@ -12,6 +12,7 @@ return {
 			yellow = "#FFDA7B",
 			red = "#FF4A4A",
 			fg = "#c3ccdc",
+			-- bg = "#000000",
 			bg = "#112638",
 			inactive_bg = "#2c3043",
 		}
@@ -55,6 +56,9 @@ return {
 				theme = my_lualine_theme,
 			},
 			sections = {
+				lualine_c = {
+					{ "buffers" },
+				},
 				lualine_x = {
 					{
 
