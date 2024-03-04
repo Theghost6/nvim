@@ -20,7 +20,9 @@ opt.smartcase = true -- if you include mixed case in your search, assumes you wa
 -- cursor line
 opt.cursorline = true -- highlight the current cursor line
 --opt.cursorword = false
+-- vim.o.guicursor = "n-v-c:block,i-ci:ver25-Cursor,r-cr:hor20-Cursor"
 
+vim.api.nvim_command("highlight Cursor gui=reverse guifg=NONE guibg=#00ff00")
 -- appearance
 
 -- turn on termguicolors for nightfly colorscheme to work

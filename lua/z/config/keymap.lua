@@ -67,4 +67,6 @@ map("n", "<leader>q", ":close<CR>", opts, { "close split" })
 --close Buffer
 map("n", "<leader>bd", ":bd<CR>", opts, { "Close Buffer" })
 -- WhichKey
+-- WhichKey
 map("n", "<leader>w", ":WhichKey<CR>", opts)
+vim.api.nvim_set_keymap("n", "<leader>rw", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)

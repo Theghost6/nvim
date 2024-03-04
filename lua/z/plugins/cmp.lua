@@ -20,8 +20,6 @@ return {
 
 		local luasnip = require("luasnip")
 
-		-- local lspkind = require("lspkind")
-
 		local check_backspace = function()
 			local col = vim.fn.col(".") - 1
 			return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
@@ -113,7 +111,30 @@ return {
 				}),
 			}, -- sources for autocompletion
 			sources = cmp.config.sources({
-				{ name = "nvim_lsp" },
+				{
+					name = "nvim_lsp",
+					entry_filter = function(entry, context)
+						local kind = entry:get_kind()
+						local line = context.cursor_line
+						local col = context.cursor.col
+						local char_before_cursor = string.sub(line, col - 1, col - 1)
+						-- local char_before_cursor = string.sub(line, col, col)
+						if char_before_cursor == "." then
+							if kind == 2 or kind == 5 then
+								return true
+							else
+								return false
+							end
+						elseif string.match(line, "^%s*%w*$") then
+							if kind == 3 or kind == 6 then
+								return true
+							else
+								return false
+							end
+						end
+						return true
+					end,
+				},
 				{ name = "luasnip" }, -- snippets
 				{ name = "buffer" }, -- text within current buffer
 				{ name = "path" },
@@ -131,8 +152,8 @@ return {
 			--Border
 			window = {
 				completion = cmp.config.window.bordered({
-					border = "double",
-					winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,CursorLine:PmenuThumb,Search:Error",
+					border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+					winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,CursorLine:PmenuSel,Search:Error",
 				}),
 			},
 
@@ -141,6 +162,10 @@ return {
 					compare.exact,
 					compare.kind,
 					function(entry1, entry2)
+						local result = vim.stricmp(entry1.completion_item.label, entry2.completion_item.label)
+						if result < 0 then
+							return true
+						end
 						local kind_mapper = require("cmp.types").lsp.completionItemKind or {}
 						local kind_score = {
 							[kind_mapper.Text or ""] = 1,

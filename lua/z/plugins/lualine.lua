@@ -1,14 +1,14 @@
 return {
 	"nvim-lualine/lualine.nvim",
-	dependencies = { "nvim-tree/nvim-web-devicons" },
+	dependencies = { "nvim-tree/nvim-web-devicons", "folke/trouble.nvim" },
 	config = function()
 		local lualine = require("lualine")
 		local lazy_status = require("lazy.status") -- to configure lazy pending updates count
 
 		local colors = {
-			blue = "#65D1FF",
+			blue = "#7fffd4",
 			green = "#3EFFDC",
-			violet = "#FF61EF",
+			violet = "#ff80ed",
 			yellow = "#FFDA7B",
 			red = "#FF4A4A",
 			fg = "#c3ccdc",
@@ -16,7 +16,6 @@ return {
 			bg = "#112638",
 			inactive_bg = "#2c3043",
 		}
-
 		local my_lualine_theme = {
 			normal = {
 				a = { bg = colors.blue, fg = colors.bg, gui = "bold" },
@@ -24,7 +23,7 @@ return {
 				c = { bg = colors.bg, fg = colors.fg },
 			},
 			insert = {
-				a = { bg = colors.green, fg = colors.bg, gui = "bold" },
+				a = { bg = colors.red, fg = colors.bg, gui = "bold" },
 				b = { bg = colors.bg, fg = colors.fg },
 				c = { bg = colors.bg, fg = colors.fg },
 			},
@@ -39,7 +38,7 @@ return {
 				c = { bg = colors.bg, fg = colors.fg },
 			},
 			replace = {
-				a = { bg = colors.red, fg = colors.bg, gui = "bold" },
+				a = { bg = colors.green, fg = colors.bg, gui = "bold" },
 				b = { bg = colors.bg, fg = colors.fg },
 				c = { bg = colors.bg, fg = colors.fg },
 			},
@@ -71,6 +70,7 @@ return {
 					{ "fileformat" },
 					{ "filetype" },
 				},
+				lualine_z = { "datetime" },
 			},
 		})
 		-- Eviline config for lualine
