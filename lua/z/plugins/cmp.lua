@@ -160,7 +160,6 @@ return {
 			sorting = {
 				comparators = {
 					compare.exact,
-					compare.kind,
 					function(entry1, entry2)
 						local result = vim.stricmp(entry1.completion_item.label, entry2.completion_item.label)
 						if result < 0 then
@@ -184,7 +183,7 @@ return {
 				select = false,
 			},
 			experimental = {
-				ghost_text = true,
+				ghost_text = false,
 				native_menu = false,
 			},
 		})
