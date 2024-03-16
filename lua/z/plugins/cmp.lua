@@ -15,7 +15,7 @@ return {
 	},
 	config = function()
 		local cmp = require("cmp")
-
+		vim.api.nvim_set_hl(0, "MyNormal", { bg = "#282a36", fg = "white" })
 		local compare = cmp.config.compare
 
 		local luasnip = require("luasnip")
@@ -72,7 +72,11 @@ return {
 				["<C-j>"] = cmp.mapping.select_next_item(),
 				["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-1), { "i", "c" }),
 				["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(1), { "i", "c" }),
-				["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
+				["<C-Space>"] = cmp.mapping(function()
+					if not check_backspace() then
+						cmp.complete()
+					end
+				end, { "i", "c" }),
 				["<C-y>"] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
 				["<C-e>"] = cmp.mapping({
 					i = cmp.mapping.abort(),
@@ -153,7 +157,7 @@ return {
 			window = {
 				completion = cmp.config.window.bordered({
 					border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
-					winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,CursorLine:PmenuSel,Search:Error",
+					winhighlight = "Normal:,FloatBorder:,CursorLine:PmenuSel,Search:Error",
 				}),
 			},
 
@@ -183,7 +187,7 @@ return {
 				select = false,
 			},
 			experimental = {
-				ghost_text = false,
+				ghost_text = true,
 				native_menu = false,
 			},
 		})

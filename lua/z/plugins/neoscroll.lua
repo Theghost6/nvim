@@ -3,14 +3,14 @@ return {
 	config = function()
 		require("neoscroll").setup({
 			mappings = { "<C-u>", "<C-d>", "<C-b>", "<C-f>", "<C-y>", "<C-e>", "zt", "zz", "zb" },
-			hide_cursor = true, -- Hide cursor while scrolling
-			stop_eof = true, -- Stop at <EOF> when scrolling downwards
-			respect_scrolloff = false, -- Stop scrolling when the cursor reaches the scrolloff margin of the file
-			cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
-			easing_function = nil, -- Default easing function
-			pre_hook = nil, -- Function to run before the scrolling animation starts
-			post_hook = nil, -- Function to run after the scrolling animation ends
-			performance_mode = false,
+			hide_cursor = true, -- Ẩn con trỏ khi cuộn
+			stop_eof = true, -- Dừng cuộn tại cuối file khi cuộn xuống dưới
+			respect_scrolloff = false, -- Dừng cuộn khi con trỏ đạt đến biên độ scrolloff của file
+			cursor_scrolls_alone = true, -- Con trỏ sẽ tiếp tục di chuyển ngay cả khi cửa sổ không thể cuộn thêm được nữa
+			easing_function = nil, -- Hàm dễ dàng mặc định
+			pre_hook = nil, -- Hook trước khi bắt đầu cuộn
+			post_hook = nil, -- Hook sau khi cuộn kết thúc
+			performance_mode = false, -- Chế độ hiệu suất
 		})
 	end,
 }

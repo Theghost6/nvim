@@ -7,11 +7,12 @@ return {
 		local sep = helper.separators
 		local animation = require("wlanimation")
 		local efffects = require("wlanimation.effects")
+		local b_components = require("windline.components.basic")
 
 		local state = _G.WindLine.state
-
+		local lsp_comps = require("windline.components.lsp")
 		local hl_list = {
-			Black = { "white", "Black" },
+			Black = { "white", "black" },
 			Inactive = { "InactiveFg", "InactiveBg" },
 			Active = { "ActiveFg", "ActiveBg" },
 		}
@@ -23,8 +24,8 @@ return {
 		basic.progress = { [[%3p%% ]], hl_list.Black }
 		basic.bg = { " ", "StatusLine" }
 		basic.file_name_inactive = { "%f", hl_list.Inactive }
-		basic.line_col_inactive = { [[ %3l:%-2c ]], hl_list.Inactive }
-		basic.progress_inactive = { [[%3p%% ]], hl_list.Inactive }
+		-- basic.line_col_inactive = { [[ %3l:%-2c ]], hl_list.Inactive }
+		-- basic.progress_inactive = { [[ %3p%% ]], hl_list.Inactive }
 
 		utils.change_mode_name({
 			["n"] = { " NORMAL", "Normal" },
@@ -58,12 +59,20 @@ return {
 			["t"] = { " TERMINAL", "Command" },
 		})
 
+		local colors_mode_rev = {
+			Normal = { "white", "black_light" },
+			Insert = { "white", "black_light" },
+			Visual = { "white", "black_light" },
+			Replace = { "white", "black_light" },
+			Command = { "white", "black_light" },
+		}
+
 		basic.vi_mode = {
 			name = "vi_mode",
 			hl_colors = {
-				Normal = { "white", "black" },
+				Normal = { "white", "blue" },
 				Insert = { "black", "red" },
-				Visual = { "black", "green" },
+				Visual = { "black", "magenta" },
 				Replace = { "black", "cyan" },
 				Command = { "black", "yellow" },
 			},
@@ -78,14 +87,14 @@ return {
 		basic.vi_mode_sep = {
 			name = "vi_mode_sep",
 			hl_colors = {
-				Normal = { "black", "FilenameBg" },
+				Normal = { "blue", "FilenameBg" },
 				Insert = { "red", "FilenameBg" },
-				Visual = { "green", "FilenameBg" },
+				Visual = { "magenta", "FilenameBg" },
 				Replace = { "cyan", "FilenameBg" },
 				Command = { "yellow", "FilenameBg" },
 			},
 			text = function()
-				return sep.right_rounded
+				return sep.right_filled
 			end,
 			hl = function()
 				return state.mode[2]
@@ -102,7 +111,6 @@ return {
 			end,
 			hl_colors = { "FilenameFg", "FilenameBg" },
 		}
-
 		local status_color = ""
 		local change_color = function()
 			local anim_colors = {
@@ -117,6 +125,7 @@ return {
 			}
 			if status_color == "blue" then
 				anim_colors = {
+
 					"#FFEBEE",
 					"#FFCDD2",
 					"#EF9A9A",
@@ -142,7 +151,6 @@ return {
 					{ "waveleft4", efffects.list_color(anim_colors, 3) },
 					{ "waveleft5", efffects.list_color(anim_colors, 2) },
 				},
-				timeout = 100,
 				delay = 200,
 				interval = 150,
 			})
@@ -155,7 +163,6 @@ return {
 					{ "waveright4", efffects.list_color(anim_colors, 5) },
 					{ "waveright5", efffects.list_color(anim_colors, 6) },
 				},
-				timeout = 100,
 				delay = 200,
 				interval = 150,
 			})
@@ -183,12 +190,64 @@ return {
 					{ " " .. sep.left_filled, { "waveright3", "waveright2" } },
 					{ " " .. sep.left_filled, { "waveright4", "waveright3" } },
 					{ " " .. sep.left_filled, { "waveright5", "waveright4" } },
-					{ " " .. sep.left_filled, { "black", "waveright5" } },
+					{ " " .. sep.left_filled, { "black_light", "waveright5" } },
 				}
 			end,
 			click = change_color,
 		}
 
+		basic.section_x = {
+			hl_colors = colors_mode_rev,
+			text = function(_, _, _)
+				return {
+					-- { sep.left_filled, { "white", "black_light" } },
+					{ " ", state.mode[2] },
+					{ b_components.file_encoding(), "" },
+					{ " " },
+					{ b_components.file_format({ icon = true }), "" },
+					{ " " },
+				}
+			end,
+		}
+
+		basic.section_z = {
+			hl_colors = colors_mode_rev,
+			text = function(_, _, _)
+				return {
+					{ sep.left, { "white", "black_light" } },
+					-- { " ", state.mode[2] },
+					{ b_components.progress_lua },
+					{ " " },
+					{ b_components.line_col_lua },
+				}
+			end,
+		}
+
+		basic.lsp_diagnos = {
+			name = "diagnostic",
+			hl_colors = {
+				red = { "red", "solarized" },
+				yellow = { "yellow", "solarized" },
+				blue = { "blue", "solarized" },
+			},
+			text = function(bufnr)
+				if lsp_comps.check_lsp(bufnr) then
+					return {
+						{ lsp_comps.lsp_error({ format = "  %s", show_zero = true }), "red" },
+						{ lsp_comps.lsp_warning({ format = "  %s", show_zero = true }), "yellow" },
+						{ lsp_comps.lsp_hint({ format = "  %s", show_zero = true }), "blue" },
+					}
+				end
+				return { " ", "red" }
+			end,
+		}
+		local ctime = {
+			text = function()
+				local current_time = os.date("%H:%M")
+				local symbol = ""
+				return "" .. symbol .. " " .. current_time .. " "
+			end,
+		}
 		local default = {
 			filetypes = { "default" },
 			active = {
@@ -197,19 +256,28 @@ return {
 				{ " ", "" },
 				basic.file_name,
 				wave_left,
+				basic.divider,
+				basic.lsp_diagnos,
 				{ " ", { "FilenameBg", "wavedefault" } },
 				basic.divider,
 				wave_right,
-				basic.line_col,
-				basic.progress,
+				basic.section_x,
+				basic.section_y,
+				basic.section_z,
+				ctime,
+				-- basic.right,
+				-- basic.line_col,
+				-- basic.progress,
 			},
 			inactive = {
 				basic.file_name_inactive,
 				basic.divider,
 				basic.divider,
-				basic.line_col_inactive,
-				{ "", { "white", "InactiveBg" } },
-				basic.progress_inactive,
+				-- basic.line_col_inactive,
+				-- { "", { "white", "InactiveBg" } },
+				-- basic.progress_inactive,
+				{ b_components.line_col, hl_list.Inactive },
+				{ b_components.progress, hl_list.Inactive },
 			},
 		}
 
@@ -218,7 +286,7 @@ return {
 				colors.FilenameFg = colors.white
 				colors.FilenameBg = colors.black_light
 
-				colors.wavedefault = colors.white_light
+				colors.wavedefault = colors.solarized
 				colors.waveleft1 = colors.wavedefault
 				colors.waveleft2 = colors.wavedefault
 				colors.waveleft3 = colors.wavedefault
