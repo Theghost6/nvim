@@ -226,9 +226,9 @@ return {
 		basic.lsp_diagnos = {
 			name = "diagnostic",
 			hl_colors = {
-				red = { "red", "solarized" },
-				yellow = { "yellow", "solarized" },
-				blue = { "blue", "solarized" },
+				red = { "red", "black_light" },
+				yellow = { "yellow", "black_light" },
+				blue = { "blue", "black_light" },
 			},
 			text = function(bufnr)
 				if lsp_comps.check_lsp(bufnr) then
@@ -286,7 +286,7 @@ return {
 				colors.FilenameFg = colors.white
 				colors.FilenameBg = colors.black_light
 
-				colors.wavedefault = colors.solarized
+				colors.wavedefault = colors.black_light
 				colors.waveleft1 = colors.wavedefault
 				colors.waveleft2 = colors.wavedefault
 				colors.waveleft3 = colors.wavedefault

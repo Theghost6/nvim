@@ -78,20 +78,8 @@ return {
 			on_attach = on_attach,
 		})
 
-		-- configure typescript server with plugin
-		lspconfig["tsserver"].setup({
-			capabilities = capabilities,
-			on_attach = on_attach,
-		})
-
 		-- configure css server
 		lspconfig["cssls"].setup({
-			capabilities = capabilities,
-			on_attach = on_attach,
-		})
-
-		-- configure tailwindcss server
-		lspconfig["tailwindcss"].setup({
 			capabilities = capabilities,
 			on_attach = on_attach,
 		})
@@ -106,7 +94,11 @@ return {
 			capabilities = capabilities,
 			on_attach = on_attach,
 		})
-
+		lspconfig["emmet_ls"].setup({
+			filetypes = { "css", "html" },
+			capabilities = capabilities,
+			on_attach = on_attach,
+		})
 		-- configure lua server (with special settings)
 		lspconfig["lua_ls"].setup({
 			capabilities = capabilities,

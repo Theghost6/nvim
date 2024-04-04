@@ -120,7 +120,7 @@ return {
 					name = "nvim_lsp",
 					entry_filter = function(entry, context)
 						local kind = entry:get_kind()
-						local node = treesitter.node_at_curcor():type()
+						local node = treesitter.get_node_at_cursor():type()
 
 						if node == "arguments" then
 							if kind == 6 then
