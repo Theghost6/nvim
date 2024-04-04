@@ -2,7 +2,7 @@ return {
 	"karb94/neoscroll.nvim",
 	config = function()
 		require("neoscroll").setup({
-			mappings = { "<C-u>", "<C-d>", "<C-b>", "<C-f>", "<C-y>", "<C-e>", "zt", "zz", "zb" },
+			mappings = { "<C-u>", "<C-d>", "<C-b>", "<C-y>", "<C-e>", "zt", "zz", "zb" },
 			hide_cursor = true, -- Ẩn con trỏ khi cuộn
 			stop_eof = true, -- Dừng cuộn tại cuối file khi cuộn xuống dưới
 			respect_scrolloff = false, -- Dừng cuộn khi con trỏ đạt đến biên độ scrolloff của file

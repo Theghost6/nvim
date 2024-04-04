@@ -57,6 +57,18 @@ map("n", "<Enter>", "<cmd>nohlsearch<CR>", opts, { desc = "Clear Highlight" })
 
 keymap("n", "<F3>", ":RunCode<CR>", opts)
 -- keymap("n", "<F3>", [[:term g++ -o %< % && ./%<<CR> ]], opts)
+keymap(
+	"n",
+	"<C-f>",
+	"<cmd>lua require('conform').format({ lsp_fallback = true, async = false, timeout_ms = 1000 })<CR>",
+	opts
+)
+keymap(
+	"i",
+	"<C-f>",
+	"<cmd>lua require('conform').format({ lsp_fallback = true, async = false, timeout_ms = 1000 })<CR>",
+	opts
+)
 
 keymap("n", "<F9>", "<cmd>ToggleTerm size=10 direction=horizontal<cr>", opts)
 -- Mở cửa sổ mới
@@ -67,7 +79,5 @@ map("n", "<leader>q", ":close<CR>", opts, { "close split" })
 --close Buffer
 map("n", "<leader>bd", ":bd<CR>", opts, { "Close Buffer" })
 -- WhichKey
--- WhichKey
 map("n", "<leader>w", ":WhichKey<CR>", opts)
 keymap("n", "<leader>rw", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-

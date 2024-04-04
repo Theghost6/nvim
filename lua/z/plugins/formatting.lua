@@ -16,17 +16,17 @@ return {
 				json = { "prettier" },
 				yaml = { "prettier" },
 				lua = { "stylua" },
-				python = { "isort", "black" },
+				python = { "black" },
 				cpp = { "clang-format" },
 			},
-			format_on_save = {
-				lsp_fallback = true,
-				async = false,
-				timeout_ms = 1000,
-			},
+			-- format_on_save = {
+			-- 	lsp_fallback = true,
+			-- 	async = false,
+			-- 	timeout_ms = 1000,
+			-- },
 		})
-		vim.cmd(
-			[[autocmd BufWritePre * :lua require('conform').format({ lsp_fallback = true, async = false, timeout_ms = 1000 })]]
-		)
+		-- vim.cmd(
+		-- 	[[autocmd BufWritePre * :lua require('conform').format({ lsp_fallback = true, async = false, timeout_ms = 1000 })]]
+		-- )
 	end,
 }
