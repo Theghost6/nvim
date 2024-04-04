@@ -4,10 +4,9 @@ return {
 	config = function()
 		local notify = require("notify")
 		local ascii_art = [[
- _  _  ____  __     ___  __   _  _  ____  _  
-/ )( \(  __)(  )   / __)/  \ ( \/ )(  __)/ \ 
-\ /\ / ) _) / (_/\( (__(  O )/ \/ \ ) _) \_/ 
-(_/\_)(____)\____/ \___)\__/ \_)(_/(____)(_) ]]
+ /\_/\
+( o.o )
+ > ^ <]]
 
 		notify(ascii_art)
 		notify.setup({
