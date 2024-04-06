@@ -120,9 +120,10 @@ return {
 					name = "nvim_lsp",
 					entry_filter = function(entry, context)
 						local kind = entry:get_kind()
-						local node = treesitter.get_node_at_cursor():type()
+						local node = treesitter and treesitter.get_node_at_cursor() or nil
+						local node_type = node and node:type() or nil
 
-						if node == "arguments" then
+						if node_type == "arguments" then
 							if kind == 6 then
 								return true
 							else
@@ -136,7 +137,7 @@ return {
 				{ name = "buffer" }, -- text within current buffer
 				{ name = "path" },
 				{ name = "cmdline" }, -- file system paths
-				-- { name = "emmet" },
+				{ name = "emmet_ls" },
 			}),
 
 			-- configure lspkind for vs-code like pictograms in completion menu

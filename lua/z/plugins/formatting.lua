@@ -18,6 +18,7 @@ return {
 				lua = { "stylua" },
 				python = { "black" },
 				cpp = { "clang-format" },
+        php = {"php-cs-fixer"},
 			},
 			-- format_on_save = {
 			-- 	lsp_fallback = true,

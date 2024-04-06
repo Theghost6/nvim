@@ -71,7 +71,6 @@ return {
 			local hl = "DiagnosticSign" .. type
 			vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 		end
-
 		-- configure html server
 		lspconfig["html"].setup({
 			capabilities = capabilities,
@@ -83,7 +82,11 @@ return {
 			capabilities = capabilities,
 			on_attach = on_attach,
 		})
-
+		--PHP
+		lspconfig["phpactor"].setup({
+			capabilities = capabilities,
+			on_attach = on_attach,
+		})
 		-- configure python server
 		lspconfig["pyright"].setup({
 			capabilities = capabilities,
@@ -95,7 +98,7 @@ return {
 			on_attach = on_attach,
 		})
 		lspconfig["emmet_ls"].setup({
-			filetypes = { "css", "html" },
+			filetypes = { "css", "html", "php" },
 			capabilities = capabilities,
 			on_attach = on_attach,
 		})
