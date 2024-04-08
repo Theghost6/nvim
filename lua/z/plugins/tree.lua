@@ -4,6 +4,7 @@ return {
 	config = function()
 		local nvimtree = require("nvim-tree")
 
+		local api = require("nvim-tree.api")
 		-- recommended settings from nvim-tree documentation
 		vim.g.loaded_netrw = 1
 		vim.g.loaded_netrwPlugin = 1
