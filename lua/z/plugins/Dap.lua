@@ -1,8 +1,8 @@
 return {
 	"mfussenegger/nvim-dap",
-
+	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
-
+		{ "nvim-neotest/nvim-nio" },
 		-- fancy UI for the debugger
 		{
 			"rcarriga/nvim-dap-ui",
@@ -97,7 +97,13 @@ return {
 			},
 		},
 	},
-
+	not_loaded = {
+		-- Danh sách các plugin sẽ được load khi khởi động Neovim
+		"mfussenegger/nvim-dap",
+		"nvim-neotest/nvim-nio",
+		"rcarriga/nvim-dap-ui",
+		-- Các plugin khác
+	},
 
 
   -- stylua: ignore

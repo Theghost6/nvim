@@ -1,6 +1,6 @@
 return {
 	"neovim/nvim-lspconfig",
-	event = { "BufReadPre", "BufNewFile" },
+	event = { "BufReadPost", "BufNewFile" },
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
 		"nvimdev/lspsaga.nvim",
@@ -75,6 +75,17 @@ return {
 		lspconfig["html"].setup({
 			capabilities = capabilities,
 			on_attach = on_attach,
+			init_options = {
+				{
+					configurationSection = { "html", "css", "javascript", "php" },
+					embeddedLanguages = {
+						css = true,
+						php = true,
+						javascript = true,
+					},
+					provideFormatter = true,
+				},
+			},
 		})
 
 		-- configure css server
@@ -97,12 +108,24 @@ return {
 			capabilities = capabilities,
 			on_attach = on_attach,
 		})
-		lspconfig["emmet_ls"].setup({
-			filetypes = { "css", "html", "php" },
-			capabilities = capabilities,
+		lspconfig.emmet_ls.setup({
 			on_attach = on_attach,
-		})
-		-- configure lua server (with special settings)
+			capabilities = capabilities,
+			filetypes = {
+				"css",
+				"html",
+				"php",
+				"javascript",
+			},
+			init_options = {
+				html = {
+					options = {
+						-- For possible options, see: https://github.com/emmetio/emmet/blob/master/src/config.ts#L79-L267
+						["bem.enabled"] = true,
+					},
+				},
+			},
+		}) -- configure lua server (with special settings)
 		lspconfig["lua_ls"].setup({
 			capabilities = capabilities,
 			on_attach = on_attach,

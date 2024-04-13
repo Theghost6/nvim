@@ -62,6 +62,19 @@ return {
 				maxwidth = function(_, width)
 					return math.min(width * 0.6, 80)
 				end,
+				source = cmp.config.sources({
+					{ name = "vsnip" },
+					{
+						name = "nvim_lsp",
+						entry_filter = function(entry, ctx)
+							-- LOG.debug(entry:get_kind())
+              if entry:get_kind() == 15 then
+                 return false
+              end
+							return true
+						end,
+					},
+				}),
 			},
 			snippet = { -- configure how nvim-cmp interacts with snippet engine
 				expand = function(args)
@@ -158,6 +171,7 @@ return {
 			sorting = {
 				comparators = {
 					compare.exact,
+					compare.recently_used,
 					function(entry1, entry2)
 						local result = vim.stricmp(entry1.completion_item.label, entry2.completion_item.label)
 						if result < 0 then

@@ -1,9 +1,10 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
-		event = { "VimEnter", "BufReadPre", "BufNewFile" },
+		event = { "BufReadPost", "BufNewFile" },
 		build = ":TSUpdate",
 		dependencies = {
+			"HiPhish/rainbow-delimiters.nvim",
 			"windwp/nvim-ts-autotag",
 		},
 		config = function()

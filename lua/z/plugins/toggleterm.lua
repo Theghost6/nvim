@@ -3,6 +3,7 @@ return {
 	{
 		"akinsho/toggleterm.nvim",
 		version = "*",
+		event = { "BufNewFile", "BufReadPre" },
 		config = function()
 			require("toggleterm").setup({
 				terminal_mappings = true, -- whether or not the open mapping applies in the opened terminals
