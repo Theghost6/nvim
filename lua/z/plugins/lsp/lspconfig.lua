@@ -1,6 +1,6 @@
 return {
 	"neovim/nvim-lspconfig",
-	event = { "BufReadPost", "BufNewFile" },
+	-- event = { "BufReadPost", "BufNewFile" },
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
 		"nvimdev/lspsaga.nvim",
@@ -88,6 +88,18 @@ return {
 			},
 		})
 
+		lspconfig["jdtls"].setup({
+			cmd = { "jdtls" },
+			root_dir = function(fname)
+				return lspconfig.util.root_pattern("gradlew", ".git", "mvnw")(fname) or vim.fn.getcwd()
+			end,
+			on_attach = function(client, bufnr)
+				-- Các cấu hình on_attach riêng của bạn
+			end,
+			settings = {
+				java = {},
+			},
+		})
 		-- configure css server
 		lspconfig["cssls"].setup({
 			capabilities = capabilities,

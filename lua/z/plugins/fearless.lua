@@ -171,7 +171,7 @@ return {
 		local wave_left = {
 			text = function()
 				return {
-					{ sep.right_filled .. " ", { "black_light", "waveleft1" } },
+					{ sep.right_filled .. " ", { "black", "waveleft1" } },
 					{ sep.right_filled .. " ", { "waveleft1", "waveleft2" } },
 					{ sep.right_filled .. " ", { "waveleft2", "waveleft3" } },
 					{ sep.right_filled .. " ", { "waveleft3", "waveleft4" } },
@@ -190,7 +190,7 @@ return {
 					{ " " .. sep.left_filled, { "waveright3", "waveright2" } },
 					{ " " .. sep.left_filled, { "waveright4", "waveright3" } },
 					{ " " .. sep.left_filled, { "waveright5", "waveright4" } },
-					{ " " .. sep.left_filled, { "black_light", "waveright5" } },
+					{ " " .. sep.left_filled, { "black", "waveright5" } },
 				}
 			end,
 			click = change_color,
@@ -200,7 +200,7 @@ return {
 			hl_colors = colors_mode_rev,
 			text = function(_, _, _)
 				return {
-					-- { sep.left_filled, { "white", "black_light" } },
+					-- { sep.left_filled, { "white", "black" } },
 					{ " ", state.mode[2] },
 					{ b_components.file_encoding(), "" },
 					{ " " },
@@ -214,7 +214,7 @@ return {
 			hl_colors = colors_mode_rev,
 			text = function(_, _, _)
 				return {
-					{ sep.left, { "white", "black_light" } },
+					{ sep.left, { "white", "black" } },
 					-- { " ", state.mode[2] },
 					{ b_components.progress_lua },
 					{ " " },
@@ -226,9 +226,9 @@ return {
 		basic.lsp_diagnos = {
 			name = "diagnostic",
 			hl_colors = {
-				red = { "red", "black_light" },
-				yellow = { "yellow", "black_light" },
-				blue = { "blue", "black_light" },
+				red = { "red", "black" },
+				yellow = { "yellow", "black" },
+				blue = { "blue", "black" },
 			},
 			text = function(bufnr)
 				if lsp_comps.check_lsp(bufnr) then
@@ -261,7 +261,7 @@ return {
 				{ " ", { "FilenameBg", "wavedefault" } },
 				basic.divider,
 				wave_right,
-				basic.section_x,
+				-- basic.sectin_x,
 				basic.section_y,
 				basic.section_z,
 				ctime,
@@ -284,9 +284,9 @@ return {
 		windline.setup({
 			colors_name = function(colors)
 				colors.FilenameFg = colors.white
-				colors.FilenameBg = colors.black_light
+				colors.FilenameBg = colors.black
 
-				colors.wavedefault = colors.black_light
+				colors.wavedefault = colors.black
 				colors.waveleft1 = colors.wavedefault
 				colors.waveleft2 = colors.wavedefault
 				colors.waveleft3 = colors.wavedefault

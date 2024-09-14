@@ -37,6 +37,7 @@ return {
 					"cpp",
 					"cmake",
 					"python",
+					"java",
 				},
 				incremental_selection = {
 					enable = true,
