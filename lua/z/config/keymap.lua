@@ -4,7 +4,7 @@ local keymap = vim.api.nvim_set_keymap
 
 map("n", "<C-a>", "ggVG", opts, { desc = "Select All" })
 map("v", "<C-c>", "y", opts, { desc = "Copy" })
--- map("n", "<C-v>", "p", opts, { desc = "Paste" })
+-- map("n", "<C-v>", "p", opts, { desc = "Paste" }
 
 map(
 	"n",
@@ -81,3 +81,4 @@ map("n", "<leader>bd", ":bd<CR>", opts, { "Close Buffer" })
 -- WhichKey
 map("n", "<leader>w", ":WhichKey<CR>", opts)
 keymap("n", "<leader>rw", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
+--nếu mà không clipboard được trong wsl hãy cài thử wl-clipboard
