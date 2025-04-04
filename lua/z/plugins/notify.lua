@@ -10,8 +10,8 @@ return {
 
 		notify(ascii_art)
 		notify.setup({
-			background_colour = "#000000",
-			fps = 30,
+			-- background_colour = "#000000",
+			fps = 60,
 			icons = {
 				ERROR = "",
 				WARN = "",
@@ -28,7 +28,7 @@ return {
 				notification = "%T",
 			},
 			timeout = 5000,
-			top_down = true,
+			top_down = false,
 		})
 	end,
 }

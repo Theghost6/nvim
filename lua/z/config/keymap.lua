@@ -82,3 +82,23 @@ map("n", "<leader>bd", ":bd<CR>", opts, { "Close Buffer" })
 map("n", "<leader>w", ":WhichKey<CR>", opts)
 keymap("n", "<leader>rw", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
 --nếu mà không clipboard được trong wsl hãy cài thử wl-clipboard
+-- Kiểm tra nếu clip.exe tồn tại
+local clip = '/mnt/c/Windows/System32/clip.exe'
+
+if vim.fn.executable(clip) == 1 then
+  -- Tạo nhóm autocmd để sao chép vào clipboard của Windows
+  vim.api.nvim_create_augroup('WSLYank', { clear = true })
+
+  vim.api.nvim_create_autocmd('TextYankPost', {
+    group = 'WSLYank',
+    pattern = '*',
+    callback = function()
+      -- Kiểm tra nếu operator là 'y' (yank)
+      if vim.v.event.operator == 'y' then
+        -- Gửi nội dung đã sao chép vào clip.exe
+        vim.fn.system(clip, vim.fn.getreg('"'))
+      end
+    end,
+  })
+end
+

@@ -66,25 +66,42 @@ return {
 
 		-- Change the Diagnostic symbols in the sign column (gutter)
 		-- (not in youtube nvim video)
-		local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
+		local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
 		for type, icon in pairs(signs) do
 			local hl = "DiagnosticSign" .. type
 			vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 		end
-		-- configure html server
-		lspconfig["html"].setup({
+		--
+		lspconfig["ts_ls"].setup({
+			filetypes = {
+				"javascript",
+				"javascriptreact",
+				"javascript.jsx",
+				"typescript",
+				"typescriptreact",
+				"typescript.tsx",
+				"html",
+			},
 			capabilities = capabilities,
 			on_attach = on_attach,
+		})
+		lspconfig["eslint"].setup({
+			capabilities = capabilities,
+			on_attach = on_attach,
+		})
+
+		-- configure html server
+		lspconfig.html.setup({
+			capabilities = capabilities,
+			on_attach = on_attach,
+			cmd = { "vscode-html-language-server", "--stdio" },
 			init_options = {
-				{
-					configurationSection = { "html", "css", "javascript", "php" },
-					embeddedLanguages = {
-						css = true,
-						php = true,
-						javascript = true,
-					},
-					provideFormatter = true,
+				configurationSection = { "html", "css", "javascript" },
+				embeddedLanguages = {
+					css = true,
+					javascript = true,
 				},
+				provideFormatter = true,
 			},
 		})
 
@@ -105,11 +122,11 @@ return {
 			capabilities = capabilities,
 			on_attach = on_attach,
 		})
-		--PHP
-		lspconfig["phpactor"].setup({
-			capabilities = capabilities,
-			on_attach = on_attach,
-		})
+		-- --PHP
+		-- lspconfig["phpactor"].setup({
+		-- 	capabilities = capabilities,
+		-- 	on_attach = on_attach,
+		-- })
 		-- configure python server
 		lspconfig["pyright"].setup({
 			capabilities = capabilities,
@@ -124,11 +141,7 @@ return {
 			on_attach = on_attach,
 			capabilities = capabilities,
 			filetypes = {
-				"css",
-				"html",
-				"php",
-				"javascript",
-			},
+    "css", "html", "php", "javascriptreact", "typescriptreact",			},
 			init_options = {
 				html = {
 					options = {

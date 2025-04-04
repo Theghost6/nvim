@@ -233,7 +233,7 @@ return {
 			text = function(bufnr)
 				if lsp_comps.check_lsp(bufnr) then
 					return {
-						{ lsp_comps.lsp_error({ format = "  %s", show_zero = true }), "red" },
+						{ lsp_comps.lsp_error({ format = "  %s", show_zero = true }), "red" },
 						{ lsp_comps.lsp_warning({ format = "  %s", show_zero = true }), "yellow" },
 						{ lsp_comps.lsp_hint({ format = "  %s", show_zero = true }), "blue" },
 					}
