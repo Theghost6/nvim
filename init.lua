@@ -1,2 +1,2 @@
 require("z.config")
-require("z.lazy")
+ require("z.lazy")
