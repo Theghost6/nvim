@@ -3,8 +3,9 @@ return {
 	-- event = { "BufReadPost", "BufNewFile" },
 	dependencies = {
 		-- "hrsh7th/cmp-nvim-lsp",
-		-- "nvimdev/lspsaga.nvim",
+		"nvimdev/lspsaga.nvim",
 		-- "ray-x/lsp_signature.nvim",
+		"ErichDonGubler/lsp_lines.nvim",
 		-- { "antosha417/nvim-lsp-file-operations", config = true },
 		"saghen/blink.cmp",
 	},
@@ -16,6 +17,14 @@ return {
 		-- local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
 		local keymap = vim.keymap -- for conciseness
+		vim.api.nvim_create_autocmd("BufReadPost", {
+			callback = function()
+				local lsp_lines = require("lsp_lines")
+				lsp_lines.setup()
+        vim.diagnostic.config({ virtual_text = false })
+				vim.keymap.set("n", "<Leader>;", lsp_lines.toggle, { desc = "Toggle lsp_lines" })
+			end,
+		})
 
 		local opts = { noremap = true, silent = true }
 		local on_attach = function(client, bufnr)
@@ -84,7 +93,6 @@ return {
 				},
 			},
 		})
-		--
 		lspconfig["ts_ls"].setup({
 			filetypes = {
 				"javascript",
@@ -100,7 +108,16 @@ return {
 		})
 		lspconfig["eslint"].setup({
 			capabilities = capabilities,
-			on_attach = on_attach,
+			on_attach = function(client, bufnr)
+				on_attach(client, bufnr) -- gọi lại on_attach gốc
+
+				vim.api.nvim_create_autocmd("BufWritePre", {
+					buffer = bufnr,
+					callback = function()
+						vim.cmd("EslintFixAll")
+					end,
+				})
+			end,
 		})
 
 		-- configure html server

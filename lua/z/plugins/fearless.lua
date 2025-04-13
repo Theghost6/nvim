@@ -32,16 +32,16 @@ return {
 			["no"] = { " O-PENDING", "Visual" },
 			["nov"] = { " O-PENDING", "Visual" },
 			["noV"] = { " O-PENDING", "Visual" },
-			["no"] = { " O-PENDING", "Visual" },
+			["no"] = { " O-PENDING", "Visual" },
 			["niI"] = { " NORMAL", "Normal" },
 			["niR"] = { " NORMAL", "Normal" },
 			["niV"] = { " NORMAL", "Normal" },
 			["v"] = { " VISUAL", "Visual" },
 			["V"] = { " V-LINE", "Visual" },
-			[""] = { " V-BLOCK", "Visual" },
+			[""] = { " V-BLOCK", "Visual" },
 			["s"] = { " SELECT", "Visual" },
 			["S"] = { " S-LINE", "Visual" },
-			[""] = { " S-BLOCK", "Visual" },
+			[""] = { " S-BLOCK", "Visual" },
 			["i"] = { " INSERT", "Insert" },
 			["ic"] = { " INSERT", "Insert" },
 			["ix"] = { " INSERT", "Insert" },
@@ -112,7 +112,7 @@ return {
 			hl_colors = { "FilenameFg", "FilenameBg" },
 		}
 		local status_color = ""
-		local change_color = function()
+		local change_color = function(target_color)
 			local anim_colors = {
 				"#90CAF9",
 				"#64B5F6",
@@ -123,6 +123,13 @@ return {
 				"#1565C0",
 				"#0D47A1",
 			}
+			if target_color then
+				if target_color == "red" and status_color ~= "blue" then
+					status_color = "blue" -- Để nó chuyển sang đỏ trong câu lệnh if tiếp theo
+				elseif target_color == "blue" and status_color ~= "red" then
+					status_color = "red" -- Để nó chuyển sang xanh trong câu lệnh if tiếp theo
+				end
+			end
 			if status_color == "blue" then
 				anim_colors = {
 
@@ -167,7 +174,8 @@ return {
 				interval = 150,
 			})
 		end
-
+		-- Đặt sau hàm change_color
+		_G.windline_change_color = change_color
 		local wave_left = {
 			text = function()
 				return {
@@ -305,8 +313,25 @@ return {
 			},
 		})
 
+		-- vim.defer_fn(function()
+		-- 	change_color()
+		-- end, 500)
+		-- Thêm đoạn này vào cuối config function
+		vim.cmd([[
+  augroup WindlineMode
+    autocmd!
+    autocmd ModeChanged *:i* lua _G.windline_change_color("red")
+    autocmd ModeChanged i:* lua _G.windline_change_color("blue")
+  augroup END
+]])
 		vim.defer_fn(function()
-			change_color()
+			if _G.WindLine and _G.WindLine.state then
+				change_color()
+			else
+				vim.defer_fn(function()
+					change_color()
+				end, 200)
+			end
 		end, 100)
 	end,
 }

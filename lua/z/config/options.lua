@@ -27,7 +27,8 @@ vim.api.nvim_command("highlight Cursor gui=reverse guifg=NONE guibg=#00ff00")
 -- turn on termguicolors for nightfly colorscheme to work
 -- have to use iterm2 or any other true color terminal
 opt.termguicolors = true
-
+-- Set to false to disable auto format
+vim.g.lazyvim_eslint_auto_format = true
 -- backspace
 opt.backspace = "indent,eol,start" -- allow backspace on indent, end of line or insert mode start position
 

@@ -29,26 +29,12 @@ return {
 		-- See :h blink-cmp-config-keymap for defining your own keymap
 
 		keymap = {
-
-			preset = "default",
-			["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
-			["<C-e>"] = { "hide", "fallback" },
-			["<CR>"] = { "accept", "fallback" },
-
-			["<Tab>"] = { "snippet_forward", "fallback" },
-			["<S-Tab>"] = { "snippet_backward", "fallback" },
-
-			["<Up>"] = { "select_prev", "fallback" },
-			["<Down>"] = { "select_next", "fallback" },
-			["<C-k>"] = { "select_prev", "fallback_to_mappings" },
-			["<C-j>"] = { "select_next", "fallback_to_mappings" },
-
-			["<C-b>"] = { "scroll_documentation_up", "fallback" },
-			["<C-f>"] = { "scroll_documentation_down", "fallback" },
-
-			["<C-l>"] = { "show_signature", "hide_signature", "fallback" },
+			preset = "enter",
+			["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
+			["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
+			["<C-y>"] = { "show", "hide" },
+			["<C-space>"] = { "show_documentation", "hide_documentation" },
 		},
-
 		appearance = {
 			-- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
 			-- Adjusts spacing to ensure icons are aligned
@@ -56,7 +42,17 @@ return {
 		},
 
 		-- (Default) Only show the documentation popup when manually triggered
-		completion = { documentation = { auto_show = false } },
+		completion = {
+			list = {
+				selection = {
+					auto_insert = true,
+					preselect = true,
+				},
+			},
+			menu = { border = "rounded" },
+			documentation = { window = { border = "rounded" } },
+		},
+		signature = { window = { border = "rounded" } },
 		cmdline = { completion = { ghost_text = { enabled = true } } },
 		-- Default list of enabled providers defined so that you can extend it
 		-- elsewhere in your config, without redefining it, due to `opts_extend`
