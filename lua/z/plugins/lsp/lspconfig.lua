@@ -1,209 +1,216 @@
 return {
-	"neovim/nvim-lspconfig",
-	-- event = { "BufReadPost", "BufNewFile" },
-	dependencies = {
-		-- "hrsh7th/cmp-nvim-lsp",
-		"nvimdev/lspsaga.nvim",
-		-- "ray-x/lsp_signature.nvim",
-		"ErichDonGubler/lsp_lines.nvim",
-		-- { "antosha417/nvim-lsp-file-operations", config = true },
-		"saghen/blink.cmp",
-	},
-	config = function()
-		-- import lspconfig plugin
-		local lspconfig = require("lspconfig")
+	{
+		"neovim/nvim-lspconfig",
+		dependencies = {
+			"nvimdev/lspsaga.nvim",
+			{ "ErichDonGubler/lsp_lines.nvim", branch = "main" },
+			"Saghen/blink.cmp",
+			{ "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
+		},
+		config = function()
+			local lspconfig = require("lspconfig")
+			local keymap = vim.keymap
 
-		-- import cmp-nvim-lsp plugin
-		-- local cmp_nvim_lsp = require("cmp_nvim_lsp")
+			-- Tích hợp blink.cmp capabilities
+			local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-		local keymap = vim.keymap -- for conciseness
-		vim.api.nvim_create_autocmd("BufReadPost", {
-			callback = function()
-				local lsp_lines = require("lsp_lines")
-				lsp_lines.setup()
-        vim.diagnostic.config({ virtual_text = false })
-				vim.keymap.set("n", "<Leader>;", lsp_lines.toggle, { desc = "Toggle lsp_lines" })
-			end,
-		})
+			-- Thiết lập diagnostics & lsp_lines
+			local ok_lsp_lines, lsp_lines = pcall(require, "lsp_lines")
+			if ok_lsp_lines then
+				-- Không gọi lsp_lines.setup() ngay lập tức
+				-- Đảm bảo không bật virtual_lines khi vào Neovim
+				vim.diagnostic.config({ virtual_lines = false, virtual_text = false })
 
-		local opts = { noremap = true, silent = true }
-		local on_attach = function(client, bufnr)
-			opts.buffer = bufnr
+				-- Chỉ toggle khi bạn nhấn <Leader>;
+				keymap.set("n", "<Leader>;", function()
+					require("lsp_lines").toggle()
+				end, { desc = "Toggle lsp_lines" })
+			else
+				print("Không thể tải plugin lsp_lines!")
+			end
 
-			-- set keybinds
-			opts.desc = "Show LSP references"
-			keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
-
-			opts.desc = "Go to declaration"
-			keymap.set("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
-
-			opts.desc = "Show LSP definitions"
-			keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts) -- show lsp definitions
-
-			opts.desc = "Show LSP implementations"
-			keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts) -- show lsp implementations
-
-			opts.desc = "Show LSP type definitions"
-			keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts) -- show lsp type definitions
-
-			opts.desc = "See available code actions"
-			keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
-
-			opts.desc = "Smart rename"
-			keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
-
-			opts.desc = "Show buffer diagnostics"
-			keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
-
-			opts.desc = "Show line diagnostics"
-			keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
-
-			opts.desc = "Go to previous diagnostic"
-			keymap.set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
-
-			opts.desc = "Go to next diagnostic"
-			keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
-
-			opts.desc = "Show documentation for what is under cursor"
-			keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
-
-			opts.desc = "Restart LSP"
-			keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
-		end
-
-		-- used to enable autocompletion (assign to every lsp server config)
-		-- local capabilities = cmp_nvim_lsp.default_capabilities()
-
-		local capabilities = require("blink.cmp").get_lsp_capabilities()
-
-		-- Change the Diagnostic symbols in the sign column (gutter)
-		-- (not in youtube nvim video)
-		-- local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
-		-- for type, icon in pairs(signs) do
-		-- 	local hl = "DiagnosticSign" .. type
-		-- 	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-		-- end
-		vim.diagnostic.config({
-			signs = {
-				text = {
-					[vim.diagnostic.severity.ERROR] = "",
-					[vim.diagnostic.severity.WARN] = "",
-					[vim.diagnostic.severity.HINT] = "",
-					[vim.diagnostic.severity.INFO] = "",
-				},
-			},
-		})
-		lspconfig["ts_ls"].setup({
-			filetypes = {
-				"javascript",
-				"javascriptreact",
-				"javascript.jsx",
-				"typescript",
-				"typescriptreact",
-				"typescript.tsx",
-				"html",
-			},
-			capabilities = capabilities,
-			on_attach = on_attach,
-		})
-		lspconfig["eslint"].setup({
-			capabilities = capabilities,
-			on_attach = function(client, bufnr)
-				on_attach(client, bufnr) -- gọi lại on_attach gốc
-
-				vim.api.nvim_create_autocmd("BufWritePre", {
-					buffer = bufnr,
-					callback = function()
-						vim.cmd("EslintFixAll")
-					end,
-				})
-			end,
-		})
-
-		-- configure html server
-		lspconfig.html.setup({
-			capabilities = capabilities,
-			on_attach = on_attach,
-			cmd = { "vscode-html-language-server", "--stdio" },
-			init_options = {
-				configurationSection = { "html", "css", "javascript" },
-				embeddedLanguages = {
-					css = true,
-					javascript = true,
-				},
-				provideFormatter = true,
-			},
-		})
-
-		lspconfig["jdtls"].setup({
-			cmd = { "jdtls" },
-			root_dir = function(fname)
-				return lspconfig.util.root_pattern("gradlew", ".git", "mvnw")(fname) or vim.fn.getcwd()
-			end,
-			on_attach = function(client, bufnr)
-				-- Các cấu hình on_attach riêng của bạn
-			end,
-			settings = {
-				java = {},
-			},
-		})
-		-- configure css server
-		lspconfig["cssls"].setup({
-			capabilities = capabilities,
-			on_attach = on_attach,
-		})
-		-- --PHP
-		-- lspconfig["phpactor"].setup({
-		-- 	capabilities = capabilities,
-		-- 	on_attach = on_attach,
-		-- })
-		-- configure python server
-		lspconfig["pyright"].setup({
-			capabilities = capabilities,
-			on_attach = on_attach,
-		})
-		-- c++
-		lspconfig["clangd"].setup({
-			capabilities = capabilities,
-			on_attach = on_attach,
-		})
-		lspconfig.emmet_ls.setup({
-			on_attach = on_attach,
-			capabilities = capabilities,
-			filetypes = {
-				"css",
-				"html",
-				"php",
-				"javascriptreact",
-				"typescriptreact",
-			},
-			init_options = {
-				html = {
-					options = {
-						-- For possible options, see: https://github.com/emmetio/emmet/blob/master/src/config.ts#L79-L267
-						["bem.enabled"] = true,
+			vim.diagnostic.config({
+				virtual_text = false,
+				signs = {
+					text = {
+						[vim.diagnostic.severity.ERROR] = "",
+						[vim.diagnostic.severity.WARN] = "",
+						[vim.diagnostic.severity.HINT] = "",
+						[vim.diagnostic.severity.INFO] = "",
 					},
 				},
-			},
-		}) -- configure lua server (with special settings)
-		lspconfig["lua_ls"].setup({
-			capabilities = capabilities,
-			on_attach = on_attach,
-			settings = { -- custom settings for lua
-				Lua = {
-					-- make the language server recognize "vim" global
-					diagnostics = {
-						globals = { "vim" },
+			})
+
+			-- on_attach dùng chung
+			local on_attach = function(client, bufnr)
+				local opts = { noremap = true, silent = true, buffer = bufnr }
+				keymap.set(
+					"n",
+					"gR",
+					"<cmd>Telescope lsp_references<CR>",
+					{ desc = "Show LSP references", buffer = bufnr }
+				)
+				keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration", buffer = bufnr })
+				keymap.set(
+					"n",
+					"gd",
+					"<cmd>Telescope lsp_definitions<CR>",
+					{ desc = "Show LSP definitions", buffer = bufnr }
+				)
+				keymap.set(
+					"n",
+					"gi",
+					"<cmd>Telescope lsp_implementations<CR>",
+					{ desc = "Show LSP implementations", buffer = bufnr }
+				)
+				keymap.set(
+					"n",
+					"gt",
+					"<cmd>Telescope lsp_type_definitions<CR>",
+					{ desc = "Show LSP type definitions", buffer = bufnr }
+				)
+				keymap.set(
+					{ "n", "v" },
+					"<leader>ca",
+					vim.lsp.buf.code_action,
+					{ desc = "See available code actions", buffer = bufnr }
+				)
+				keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Smart rename", buffer = bufnr })
+				keymap.set(
+					"n",
+					"<leader>D",
+					"<cmd>Telescope diagnostics bufnr=0<CR>",
+					{ desc = "Show buffer diagnostics", buffer = bufnr }
+				)
+				keymap.set(
+					"n",
+					"<leader>d",
+					vim.diagnostic.open_float,
+					{ desc = "Show line diagnostics", buffer = bufnr }
+				)
+				keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic", buffer = bufnr })
+				keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic", buffer = bufnr })
+				keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Show documentation", buffer = bufnr })
+				keymap.set("n", "<leader>rs", ":LspRestart<CR>", { desc = "Restart LSP", buffer = bufnr })
+			end
+
+			-- Các server
+			lspconfig.ts_ls.setup({
+				filetypes = {
+					"javascript",
+					"javascriptreact",
+					"javascript.jsx",
+					"typescript",
+					"typescriptreact",
+					"typescript.tsx",
+					"html",
+				},
+				capabilities = capabilities,
+				on_attach = on_attach,
+			})
+
+			lspconfig.eslint.setup({
+				capabilities = capabilities,
+				on_attach = function(client, bufnr)
+					on_attach(client, bufnr)
+					vim.api.nvim_create_autocmd("BufWritePre", {
+						buffer = bufnr,
+						command = "EslintFixAll",
+					})
+				end,
+				settings = {
+					workingDirectory = { mode = "auto" },
+					format = { enable = true },
+					lintTask = { enable = true },
+				},
+			})
+
+			lspconfig.html.setup({
+				capabilities = capabilities,
+				on_attach = on_attach,
+				init_options = {
+					configurationSection = { "html", "css", "javascript" },
+					embeddedLanguages = { css = true, javascript = true },
+					provideFormatter = true,
+				},
+			})
+
+			lspconfig.cssls.setup({
+				capabilities = capabilities,
+				on_attach = on_attach,
+			})
+
+			lspconfig.stylelint_lsp.setup({
+				filetypes = { "css", "scss", "less" },
+				capabilities = capabilities,
+				on_attach = on_attach,
+				root_dir = lspconfig.util.root_pattern(".stylelintrc", ".stylelintrc.json", "package.json"),
+				settings = {
+					stylelintplus = {
+						autoFixOnSave = true,
+						autoFixOnFormat = true,
 					},
-					workspace = {
-						-- make language server aware of runtime files
-						library = {
-							[vim.fn.expand("$VIMRUNTIME/lua")] = true,
-							[vim.fn.stdpath("config") .. "/lua"] = true,
+				},
+			})
+
+			lspconfig.pyright.setup({
+				capabilities = capabilities,
+				on_attach = on_attach,
+			})
+
+			lspconfig.clangd.setup({
+				capabilities = capabilities,
+				on_attach = on_attach,
+			})
+
+			lspconfig.emmet_ls.setup({
+				capabilities = capabilities,
+				on_attach = on_attach,
+				filetypes = { "css", "html", "javascriptreact", "typescriptreact" },
+				init_options = {
+					html = { options = { ["bem.enabled"] = true } },
+				},
+			})
+
+			lspconfig.lua_ls.setup({
+				capabilities = capabilities,
+				on_attach = on_attach,
+				settings = {
+					Lua = {
+						completion = { workspaceWord = true },
+						diagnostics = { globals = { "vim" } },
+						workspace = {
+							library = {
+								[vim.fn.expand("$VIMRUNTIME/lua")] = true,
+								[vim.fn.stdpath("config") .. "/lua"] = true,
+							},
 						},
 					},
 				},
-			},
-		})
-	end,
+			})
+
+			lspconfig.jdtls.setup({
+				cmd = { "jdtls" },
+				capabilities = capabilities,
+				on_attach = on_attach,
+				root_dir = lspconfig.util.root_pattern("gradlew", ".git", "mvnw"),
+			})
+		end,
+	},
+
+	-- lspsaga.nvim
+	{
+		"nvimdev/lspsaga.nvim",
+		event = { "LspAttach" },
+		config = function()
+			require("lspsaga").setup({
+				ui = {
+					border = "rounded",
+					code_action = "💡",
+					diagnostic = "🐞",
+				},
+				lightbulb = { enable = false },
+			})
+		end,
+	},
 }

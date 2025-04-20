@@ -21,12 +21,12 @@ opt.cursorline = true -- highlight the current cursor line
 --opt.cursorword = false
 -- vim.o.guicursor = "n-v-c:block,i-ci:ver25-Cursor,r-cr:hor20-Cursor"
 
-vim.api.nvim_command("highlight Cursor gui=reverse guifg=NONE guibg=#00ff00")
+-- vim.api.nvim_command("highlight Cursor gui=reverse guifg=NONE guibg=#00ff00")
 -- appearance
 
 -- turn on termguicolors for nightfly colorscheme to work
 -- have to use iterm2 or any other true color terminal
-opt.termguicolors = true
+opt.termguicolors = false
 -- Set to false to disable auto format
 vim.g.lazyvim_eslint_auto_format = true
 -- backspace
@@ -42,4 +42,4 @@ opt.splitbelow = true -- split horizontal window to the bottom
 -- turn off swapfile
 opt.swapfile = false
 --24bits
-vim.opt.termguicolors = true
+vim.opt.termguicolors = false

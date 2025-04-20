@@ -14,7 +14,8 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({ { import = "z.plugins" }, { import = "z.plugins.lsp" } }, {
 	install = {
 
-		colorscheme = { "solarized-osaka.nvim" },
+		 -- colorscheme = { "cyberdream.nvim" },
+		-- colorscheme = { "solarized-osaka.nvim" },
 	},
 	checker = {
 		enabled = true,

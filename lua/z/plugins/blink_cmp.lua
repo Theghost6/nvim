@@ -3,6 +3,9 @@ return {
 	-- optional: provides snippets for the snippet source
 	dependencies = {
 		"rafamadriz/friendly-snippets",
+		"L3MON4D3/LuaSnip",
+		version = "v2.*",
+    -- 'echasnovski/mini.snippets',
 	},
 	-- use a release tag to download pre-built binariesá
 
@@ -27,8 +30,20 @@ return {
 		-- C-k: Toggle signature help (if signature.enabled = true)
 		--
 		-- See :h blink-cmp-config-keymap for defining your own keymap
+       snippets = {
+      expand = function(snippet, _)
+        -- Kiểm tra xem LazyVim có tồn tại trước khi gọi
+        if LazyVim then
+          return LazyVim.cmp.expand(snippet)
+        else
+          -- Nếu LazyVim không tồn tại, sử dụng LuaSnip hoặc fallback
+          return require("luasnip").expand(snippet)
+        end
+      end,
+    },
 
-		keymap = {
+
+    keymap = {
 			preset = "enter",
 			["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
 			["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
@@ -56,8 +71,9 @@ return {
 		cmdline = { completion = { ghost_text = { enabled = true } } },
 		-- Default list of enabled providers defined so that you can extend it
 		-- elsewhere in your config, without redefining it, due to `opts_extend`
+		-- snippets = { preset = "luasnip" },
 		sources = {
-			default = { "lsp", "path", "snippets", "buffer" },
+			default = { "lsp", "path","snippets",  "buffer" },
 			providers = {},
 		},
 
@@ -69,4 +85,4 @@ return {
 		fuzzy = { implementation = "prefer_rust_with_warning" },
 	},
 	opts_extend = { "sources.default" },
-}
+ }

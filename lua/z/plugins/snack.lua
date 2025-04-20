@@ -6,8 +6,8 @@ return {
 	---@type snacks.Config,
 	opts = {
 		bigfile = {
-			enabled = true,
 			notify = true,
+			enabled = true,
 			size = 100 * 1024, -- 100 KB
 		},
 		dashboard = {
@@ -63,7 +63,10 @@ return {
 		scope = { enabled = true },
 		scroll = { enabled = false },
 		-- statuscolumn = { enabled = true },
-		words = { enabled = true },
+		words = { enabled = true,
+        notify_end = true,
+        foldopen = true,
+        jumplist = true, },
 		win = { enabled = true },
 		styles = {
 			notification = {
@@ -399,7 +402,7 @@ return {
 			function()
 				Snacks.picker.lsp_declarations()
 			end,
-			desc = "Goto Declaration",
+      desc = "Goto Declaration",
 		},
 		{
 			"gr",
@@ -589,5 +592,6 @@ return {
 				Snacks.toggle.dim():map("<leader>uD")
 			end,
 		})
+    -- vim.diagnostic.config({ virtual_lines = false })
 	end,
 }
