@@ -1,19 +1,13 @@
 return {
-  'NitroSniper/autowrite.nvim',
-  tag = '0.1.0', 
-  opts = {
-    create_commands = true,
-    verbose_info = true,
-    undo_hack = true,
-  },
+  "Pocco81/auto-save.nvim",
   config = function()
-    vim.api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI' }, {
-      callback = function()
-        if vim.fn.expand('%') ~= '' then
-          vim.cmd('silent! write')  
-        end
-      end,
+    require("auto-save").setup({
+      execution_message = {
+        enabled = false, -- tắt thô
+        message = ""
+      },
     })
-  end
+  end,
 }
- 
+
+
