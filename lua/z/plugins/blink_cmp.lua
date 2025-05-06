@@ -64,12 +64,14 @@ return {
                 auto_show_delay_ms = 200,
             },
             ghost_text = {
-                enabled = vim.g.ai_cmp,
+                -- enabled = vim.g.ai_cmp,
+        enabled = true,
+    
             },
         },
         sources = {
             compat = {},
-            default = { "lsp", "path", "snippets", "buffer", "copilot" },
+            default = { "lsp", "path", "snippets", "buffer", "copilot","cmdline" },
             providers = {
                 copilot = {
                     name = "copilot",
@@ -80,7 +82,7 @@ return {
             },
         },
         cmdline = {
-            enabled = false,
+            enabled = true,
         },
         keymap = {
             preset = "enter",

@@ -12,11 +12,10 @@ return {
 			highlights = {
 				Cursor = { fg = "#fdf6e3", bg = "#268bd2" },
 				CursorLineNr = { fg = "#93a1a1", bold = true },
-				-- Highlight từ giống nhau khi trỏ vào
-				-- Chỉ gạch chân từ đang trỏ vào và các từ giống nhau
 				LspReferenceText = { underline = true },
 				LspReferenceRead = { underline = true },
 				LspReferenceWrite = { underline = true },
+				GhostText = { fg = "#808080" },
 			},
 			extention = {
 				blinkcmp = true,
@@ -46,12 +45,30 @@ return {
 		vim.o.updatetime = 300
 
 		-- Tự động highlight từ dưới con trỏ (LSP style)
-		vim.cmd([[
-			augroup LspCursorHighlight
-				autocmd!
-				autocmd CursorHold,CursorHoldI * lua vim.lsp.buf.document_highlight()
-				autocmd CursorMoved,CursorMovedI * lua vim.lsp.buf.clear_references()
-			augroup END
-		]])
+		vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+			pattern = "*",
+			callback = function()
+				local lsp_document_highlight = vim.api.nvim_create_augroup("lsp_document_highlight", { clear = true })
+				vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+					group = lsp_document_highlight,
+					buffer = 0,
+					callback = function()
+						for _, client in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
+							if client.supports_method("textDocument/documentHighlight") then
+								vim.lsp.buf.document_highlight()
+								return
+							end
+						end
+					end,
+				})
+				vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+					group = lsp_document_highlight,
+					buffer = 0,
+					callback = function()
+						vim.lsp.buf.clear_references()
+					end,
+				})
+			end,
+		})
 	end,
 }
