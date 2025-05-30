@@ -11,12 +11,14 @@ return {
 			cache = false,
 			highlights = {
 				Cursor = { fg = "#fdf6e3", bg = "#268bd2" },
+				CursorLine = { bg = "#3a3f5a" }, -- << cập nhật
 				CursorLineNr = { fg = "#93a1a1", bold = true },
 				LspReferenceText = { underline = true },
 				LspReferenceRead = { underline = true },
 				LspReferenceWrite = { underline = true },
-				GhostText = { fg = "#808080" },
+				GhostText = { fg = "#a9b1d6" }, -- << cập nhật
 			},
+      
 			extention = {
 				blinkcmp = true,
 				cmp = true,

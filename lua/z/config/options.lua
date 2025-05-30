@@ -1,4 +1,5 @@
 local opt = vim.opt -- for conciseness
+local g = vim.g -- global variables
 -- line numbers
 opt.relativenumber = true -- show relative line numbers
 opt.number = true -- shows absolute line number on cursor line (when relative number is on)
@@ -43,3 +44,11 @@ opt.splitbelow = true -- split horizontal window to the bottom
 opt.swapfile = false
 --24bits
 vim.opt.termguicolors = false
+-- tối ưu hiệu xuất
+opt.lazyredraw = true -- don't redraw while executing macros or other commands
+opt.updatetime = 250 -- reduce update time for CursorHold events
+opt.timeoutlen = 300 -- time to wait for a mapped sequence to complete (in milliseconds)
+
+-- tự động indent
+opt.smartindent = true -- smart indenting for C-like filetypes
+opt.autoindent = true -- copy indent from current line when starting a new line
