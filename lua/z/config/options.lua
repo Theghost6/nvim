@@ -45,10 +45,12 @@ opt.swapfile = false
 --24bits
 vim.opt.termguicolors = false
 -- tối ưu hiệu xuất
-opt.lazyredraw = true -- don't redraw while executing macros or other commands
+-- opt.lazyredraw = true -- don't redraw while executing macros or other commands
 opt.updatetime = 250 -- reduce update time for CursorHold events
 opt.timeoutlen = 300 -- time to wait for a mapped sequence to complete (in milliseconds)
 
 -- tự động indent
 opt.smartindent = true -- smart indenting for C-like filetypes
 opt.autoindent = true -- copy indent from current line when starting a new line
+-- tắt lazydraw 
+opt.lazyredraw = true -- don't redraw while executing macros or other commands

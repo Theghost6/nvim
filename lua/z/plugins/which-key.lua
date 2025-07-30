@@ -37,20 +37,23 @@ return {
 		win = {
 			no_overlap = true,
 			border = "rounded",
-			width = 0.8,
+			width = 0.3, -- thu nhỏ width để phù hợp bên phải
 			height = { min = 5, max = 25 },
 			padding = { 1, 2 },
 			title = true,
 			title_pos = "center",
 			zindex = 1000,
+			-- Đặt popup ở bên phải
+			row = 1, -- giữa màn hình theo chiều dọc
+			col = 0.9, -- đặt popup bắt đầu từ 70% màn hình (bên phải)
 			wo = {
-				winblend = 10,
+				winblend = 0, -- loại bỏ transparency để trùng màu nền
 			},
 		},
 		layout = {
 			width = { min = 20 },
 			spacing = 6,
-			align = "center",
+			align = "right", -- căn phải trong popup cho phù hợp
 		},
 		show_help = false,
 		show_keys = true,
