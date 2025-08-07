@@ -5,16 +5,23 @@ return{
   opts = {
     -- add any opts here
     -- for example
-    provider = "openai",
-    
-    openai = {
-      endpoint = "https://openrouter.ai/api/v1",
-      model = "openai/gpt-3.5-turbo", -- your desired model (or use gpt-4o, etc.)
-      timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
-      temperature = 0,
-      max_completion_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
-      --reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
+    provider = "copilotChat.lua", -- or "copilotChat", "copilot", "openai", "file_selector", "mini.pick", "telescope", "fzf"
+    copilot = {
+      -- if you want to use copilot as a provider, you need to set this up
+      -- make sure to set up copilot.lua properly
+       model = "gpt-4.1", -- hoặc "gpt-3.5-turbo"
+      enabled = true,
+      -- if you want to use copilot as a provider, you need to set this up
+      -- providers = { "copilot" }, -- or "copilot", "copilot-chat"
     },
+    -- openai = {
+    --   endpoint = "https://openrouter.ai/api/v1",
+    --   model = "openai/gpt-3.5-turbo", -- your desired model (or use gpt-4o, etc.)
+    --   timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
+    --   temperature = 0,
+    --   max_completion_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
+    --   --reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
+    -- },
   },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   build = "make",
