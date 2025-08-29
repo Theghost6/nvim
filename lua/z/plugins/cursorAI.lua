@@ -5,11 +5,12 @@ return{
   opts = {
     -- add any opts here
     -- for example
-    provider = "copilotChat.lua", -- or "copilotChat", "copilot", "openai", "file_selector", "mini.pick", "telescope", "fzf"
+    provider = "copilot", -- or "copilotChat", "copilot", "openai", "file_selector", "mini.pick", "telescope", "fzf"
+    providers = {
     copilot = {
       -- if you want to use copilot as a provider, you need to set this up
       -- make sure to set up copilot.lua properly
-       model = "gpt-4.1", -- hoặc "gpt-3.5-turbo"
+      model = "gpt-4.1", -- hoặc "gpt-3.5-turbo"
       enabled = true,
       -- if you want to use copilot as a provider, you need to set this up
       -- providers = { "copilot" }, -- or "copilot", "copilot-chat"
@@ -22,6 +23,7 @@ return{
     --   max_completion_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
     --   --reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
     -- },
+    }
   },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   build = "make",
@@ -37,7 +39,7 @@ return{
     "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
     "ibhagwan/fzf-lua", -- for file_selector provider fzf
     "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-    "zbirenbaum/copilot.lua", -- for providers='copilot'
+    "github/copilot.vim", -- for providers='copilot'
     {
       -- support for image pasting
       -- "HakonHarnes/img-clip.nvim",

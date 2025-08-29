@@ -31,7 +31,7 @@ return {
             version = vim.g.lazyvim_blink_main and "*" or "1.*",
         },
     },
-    event = "InsertEnter",
+    event = "VeryLazy",
 
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config

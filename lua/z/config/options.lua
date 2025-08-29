@@ -53,4 +53,4 @@ opt.timeoutlen = 300 -- time to wait for a mapped sequence to complete (in milli
 opt.smartindent = true -- smart indenting for C-like filetypes
 opt.autoindent = true -- copy indent from current line when starting a new line
 -- tắt lazydraw 
-opt.lazyredraw = true -- don't redraw while executing macros or other commands
+opt.lazyredraw = false -- don't redraw while executing macros or other commands

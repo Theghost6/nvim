@@ -11,7 +11,7 @@ return {
 			cache = false,
 			highlights = {
 				-- Cursor = { fg = "#f09f48", bg = "#f09f48" },
-				CursorLine = { bg = "#737373" }, -- << cập nhật
+				-- CursorLine = { bg = "#737373" }, -- << cập nhật
 				LspReferenceText = { underline = true },
 				LspReferenceRead = { underline = true },
 				LspReferenceWrite = { underline = true },
