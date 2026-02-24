@@ -3,6 +3,7 @@ return {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" }, -- Lazy-load khi mở file
     dependencies = {
+      { "williamboman/mason.nvim" },
       { "nvimdev/lspsaga.nvim", event = "LspAttach" },
       { "ErichDonGubler/lsp_lines.nvim", branch = "main", cond = function() return pcall(require, "lsp_lines") end },
       { "Saghen/blink.cmp", cond = function() return pcall(require, "blink.cmp") end },
