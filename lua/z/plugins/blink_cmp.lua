@@ -71,7 +71,7 @@ return {
         },
         sources = {
             compat = {},
-            default = { "lsp", "path", "snippets", "buffer", "copilot","cmdline" },
+            default = { "lsp", "path", "snippets", "buffer", "copilot" },
             providers = {
                 copilot = {
                     name = "copilot",
@@ -83,6 +83,15 @@ return {
         },
         cmdline = {
             enabled = true,
+            sources = function()
+                local type = vim.fn.getcmdtype()
+                if type == '/' or type == '?' then return { 'buffer' } end
+                if type == ':' then return { 'cmdline' } end
+                return {}
+            end,
+            completion = {
+                menu = { auto_show = true },
+            },
         },
         keymap = {
             preset = "enter",
