@@ -1,12 +1,8 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
-    -- event = "VeryLazy",
 		event = { "BufReadPost", "BufNewFile" },
-		build = function()
-			local ts_update = require("nvim-treesitter.install").update({ with_sync = true })
-			ts_update()
-		end,
+		build = ":TSUpdate",
 		dependencies = {
 			"HiPhish/rainbow-delimiters.nvim",
 			"windwp/nvim-ts-autotag",
