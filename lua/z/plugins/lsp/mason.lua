@@ -1,7 +1,6 @@
 return {
   "williamboman/mason.nvim",
-  lazy = true,
-  cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUpdate" },
+  lazy = false,
   dependencies = {
     "williamboman/mason-lspconfig.nvim",
     "WhoIsSethDaniel/mason-tool-installer.nvim",
@@ -12,6 +11,7 @@ return {
     local mason_tool_installer = require("mason-tool-installer")
 
     mason.setup({
+      PATH = "append", -- Ensures mason binaries are in Neovim's path
       ui = {
         icons = {
           package_installed = "✓",
@@ -43,3 +43,4 @@ return {
     })
   end,
 }
+

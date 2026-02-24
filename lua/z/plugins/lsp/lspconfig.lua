@@ -108,10 +108,8 @@ return {
         -- Giữ pyright cho Python
         pyright = {
           filetypes = { "python" },
-          root_dir = lspconfig.util.root_pattern(".git", "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "pyrightconfig.json"),
           settings = {
-            pyright = {
-              disableOrganizeImports = false,
+            python = {
               analysis = {
                 autoSearchPaths = true,
                 useLibraryCodeForTypes = true,
@@ -171,3 +169,4 @@ return {
     end,
   },
 }
+

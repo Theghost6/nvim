@@ -247,6 +247,52 @@ return {
 			click = change_color,
 		}
 
+		-- =========================================
+		-- 2. TÍNH NĂNG THỜI TIẾT (Weather Live)
+		-- =========================================
+		local weather_cache = " ☁️ Đang lấy... "
+		local weather_time = 0
+
+		local function update_weather()
+			local now = os.time()
+			-- Lấy thời tiết 30 phút một lần (tránh spam API bị ban)
+			if now - weather_time > 1800 then
+				weather_time = now
+
+				-- Sử dụng script Python nội bộ gọi API cực nhanh của Open-Meteo
+				local script_path = vim.fn.expand("~/.config/nvim/nvim_weather.py")
+
+				vim.fn.jobstart({ "python3", script_path }, {
+					stdout_buffered = true,
+					on_stdout = function(_, data)
+						if data and data[1] and data[1] ~= "" then
+							local w = data[1]:gsub("^%s*", ""):gsub("%s*$", "")
+							if w ~= "" then
+								weather_cache = " " .. w .. " "
+								vim.cmd("redrawstatus")
+							end
+						end
+					end,
+					on_stderr = function() end,
+				})
+			end
+			return weather_cache
+		end
+
+		basic.weather = {
+			hl_colors = {
+				normal = { "cyan", "wavedefault" },
+			},
+			text = function()
+				return { update_weather(), "normal" }
+			end,
+		}
+
+		-- =========================================
+		-- 3. TÍNH NĂNG NUÔI MÈO ẢO (Tamagotchi)
+		-- Removed by user request =================
+		-- =========================================
+
 		basic.section_x = {
 			hl_colors = colors_mode_rev,
 			text = function(_, _, _)
@@ -294,11 +340,23 @@ return {
 		}
 		local ctime = {
 			text = function()
+				local result = {}
+
+				-- Thêm Thời Tiết
+				table.insert(result, { update_weather(), "cyan" })
+
+				-- Thêm Đồng hồ thời gian thực
 				local current_time = os.date("%H:%M")
-				local symbol = ""
-				return "" .. symbol .. " " .. current_time .. " "
+				table.insert(result, { "  " .. current_time .. " ", "white" })
+
+				return result
 			end,
-			hl_colors = { "white", "wavedefault" },
+			hl_colors = {
+				white = { "white", "wavedefault" },
+				cyan = { "cyan", "wavedefault" },
+				yellow = { "yellow", "wavedefault" },
+				red = { "red", "wavedefault" },
+			},
 		}
 		local default = {
 			filetypes = { "default" },
@@ -313,11 +371,13 @@ return {
 				{ " ", { "FilenameBg", "wavedefault" } },
 				basic.divider,
 				wave_right,
+				{ " ", "" },
 				-- basic.sectin_x,
 				basic.section_y,
 				basic.section_z,
 				ctime,
-				-- basic.right,
+				{ " ", "" },
+				basic.right,
 				-- basic.line_col,
 				-- basic.progress,
 			},
@@ -398,24 +458,26 @@ return {
 				return
 			end
 			if _G.WindLine and _G.WindLine.state then
+				-- Override to force color re-injection safely
+				_G.windline_anim_initialized = false
 				_G.windline_change_color(get_mode_color())
+
+				-- Ensure Neovim UI strictly updates the statusline
+				vim.cmd("redrawstatus!")
 			else
 				-- Retry until Windline state is fully loaded into the global scope
 				vim.defer_fn(trigger_anim, 100)
 			end
 		end
 
-		vim.api.nvim_create_autocmd({ "ModeChanged" }, {
-			group = vim.api.nvim_create_augroup("WindlineSyncMode", { clear = true }),
-			callback = function()
-				trigger_anim()
-			end,
-		})
-		vim.api.nvim_create_autocmd({ "BufWinEnter", "BufEnter" }, {
-			group = vim.api.nvim_create_augroup("WindlineSyncBuf", { clear = true }),
-			callback = function()
-				vim.schedule(trigger_anim)
-			end,
-		})
+		vim.api.nvim_create_autocmd(
+			{ "ModeChanged", "BufWinEnter", "BufEnter", "BufLeave", "BufReadPost", "BufNewFile", "CmdlineLeave" },
+			{
+				group = vim.api.nvim_create_augroup("WindlineSyncMode", { clear = true }),
+				callback = function()
+					vim.schedule(trigger_anim)
+				end,
+			}
+		)
 	end,
 }
