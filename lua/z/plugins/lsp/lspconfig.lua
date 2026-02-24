@@ -4,8 +4,8 @@ return {
     event = { "BufReadPre", "BufNewFile" }, -- Lazy-load khi mở file
     dependencies = {
       { "nvimdev/lspsaga.nvim", event = "LspAttach" },
-      { "ErichDonGubler/lsp_lines.nvim", branch = "main", cond = function() return pcall(require, "lsp_lines") end },
-      { "saghen/blink.cmp", cond = function() return pcall(require, "blink.cmp") end },
+      { "ErichDonGubler/lsp_lines.nvim", branch = "main" },
+      { "saghen/blink.cmp" },
     },
     config = function()
       local lspconfig = require("lspconfig")

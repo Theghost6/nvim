@@ -7,16 +7,20 @@ return {
 				message = "",
 			},
 			condition = function(buf)
-				local fn = vim.fn
-				local utils = require("auto-save.utils.data")
-				
+				-- Phải kiểm tra buffer còn sống không trước khi sờ vào!
+				if not vim.api.nvim_buf_is_valid(buf) then
+					return false
+				end
+
 				-- Bỏ qua file rác, file hệ thống, hoặc buffer không cho phép lưu
-				if fn.getbufvar(buf, "&modifiable") == 1 and
-				   utils.not_in(fn.getbufvar(buf, "&buftype"), { "terminal", "nofile", "prompt" }) and
-				   utils.not_in(fn.getbufvar(buf, "&filetype"), { "neo-tree", "TelescopePrompt", "snacks_picker_input" }) then
-					-- Bắt buộc phải có tên file mới được save
-					if fn.bufname(buf) ~= "" then
-						return true 
+				if vim.bo[buf].modifiable and not vim.bo[buf].readonly then
+					if not vim.tbl_contains({ "terminal", "nofile", "prompt" }, vim.bo[buf].buftype) then
+						if not vim.tbl_contains({ "neo-tree", "TelescopePrompt", "snacks_picker_input", "lazy" }, vim.bo[buf].filetype) then
+							-- Bắt buộc phải có tên file mới được save
+							if vim.fn.bufname(buf) ~= "" then
+								return true 
+							end
+						end
 					end
 				end
 				return false
