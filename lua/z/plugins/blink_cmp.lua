@@ -1,7 +1,6 @@
 return {
     "saghen/blink.cmp",
-    version = vim.g.lazyvim_blink_main and "*" or "1.*",
-    build = vim.g.lazyvim_blink_main and "cargo build --release",
+    version = "*",
     opts_extend = {
         "sources.completion.enabled_providers",
         "sources.compat",
@@ -26,9 +25,8 @@ return {
         "giuxtaposition/blink-cmp-copilot",
         {
             "saghen/blink.compat",
-            optional = true,
             opts = {},
-            version = vim.g.lazyvim_blink_main and "*" or "1.*",
+            version = "*",
         },
     },
     event = "VeryLazy",
@@ -37,12 +35,17 @@ return {
     ---@type blink.cmp.Config
     opts = {
         snippets = {
-            expand = function(snippet, _)
-                if vim.g.LazyVim then
-                    return vim.LazyVim.cmp.expand(snippet)
-                else
-                    return require("luasnip").lsp_expand(snippet)
+            expand = function(snippet)
+                require("luasnip").lsp_expand(snippet)
+            end,
+            active = function(filter)
+                if filter and filter.direction then
+                    return require("luasnip").jumpable(filter.direction)
                 end
+                return require("luasnip").in_snippet()
+            end,
+            jump = function(direction)
+                require("luasnip").jump(direction)
             end,
         },
         appearance = {
@@ -102,51 +105,4 @@ return {
         },
     },
 
-    ---@param opts blink.cmp.Config
-    config = function(_, opts)
-        -- Cache frequently accessed fields
-        local sources = opts.sources
-        local providers = sources.providers or {}
-        local enabled = sources.default
-
-        -- Setup compat sources
-        for _, source in ipairs(sources.compat or {}) do
-            providers[source] =
-                vim.tbl_deep_extend("force", { name = source, module = "blink.compat.source" }, providers[source] or {})
-            if type(enabled) == "table" and not vim.tbl_contains(enabled, source) then
-                table.insert(enabled, source)
-            end
-        end
-
-        -- Remove custom property to pass validation
-        sources.compat = nil
-
-        -- Override symbol kinds if needed
-        local CompletionItemKind = require("blink.cmp.types").CompletionItemKind
-        for _, provider in pairs(providers) do
-            if provider.kind then
-                local kind_idx = CompletionItemKind[provider.kind]
-                if not kind_idx then
-                    kind_idx = #CompletionItemKind + 1
-                    CompletionItemKind[kind_idx] = provider.kind
-                    CompletionItemKind[provider.kind] = kind_idx
-                end
-
-                local transform_items = provider.transform_items
-                provider.transform_items = function(ctx, items)
-                    items = transform_items and transform_items(ctx, items) or items
-                    for _, item in ipairs(items) do
-                        item.kind = kind_idx
-                        item.kind_icon = vim.LazyVim.config.icons.kinds[item.kind_name] or item.kind_icon
-                    end
-                    return items
-                end
-
-                provider.kind = nil
-            end
-        end
-
-        -- Final setup
-        require("blink.cmp").setup(opts)
-    end,
 }
