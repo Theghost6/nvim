@@ -139,6 +139,8 @@ return {
         --   cmd = { "jdtls" },
         --   root_dir = lspconfig.util.root_pattern("gradlew", ".git", "mvnw"),
         -- },
+      }
+
       -- Thiết lập tất cả server (Hỗ trợ Neovim >= 0.11 warning)
       local is_nvim_0_11 = vim.fn.has("nvim-0.11") == 1
       for server, config in pairs(servers) do
