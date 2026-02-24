@@ -28,13 +28,8 @@ return {
 
       mason_lspconfig.setup({
         ensure_installed = {
-          "html",
-          "cssls",
           "lua_ls", 
-          "emmet_ls",
           "pyright",
-          "clangd",
-          "ts_ls",
         },
         automatic_installation = true,
       })
@@ -45,11 +40,9 @@ return {
           "stylua",
           "black",
           "pylint", 
-          "eslint_d",
-          "clang-format",
         },
         auto_update = false,
-        run_on_start = false, -- Tắt run_on_start để tránh lag
+        run_on_start = true, -- Enable run_on_start to ensure plug-and-play installation on fresh clones
       })
     end, 50) -- Delay 50ms để UI kịp render
   end,
