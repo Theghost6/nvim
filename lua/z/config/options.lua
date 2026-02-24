@@ -45,8 +45,6 @@ opt.swapfile = false
 
 -- Buffer behavior
 opt.hidden = true -- allow hidden background buffers without saving
-opt.autowrite = true -- automatically save before commands like :next and :make
-opt.autowriteall = true -- automatically save before jumping files or :quit
 
 -- Persistent Undo
 opt.undofile = true -- enable persistent undo
