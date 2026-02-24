@@ -40,6 +40,7 @@ return {
 					"python",
 					"java",
 				},
+				auto_install = true,
 				incremental_selection = {
 					enable = true,
 					keymaps = {
