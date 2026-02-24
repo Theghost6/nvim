@@ -113,26 +113,20 @@ return {
 		}
 		local status_color = ""
 		local change_color = function(target_color)
-			local anim_colors = {
-				"#90CAF9",
-				"#64B5F6",
-				"#42A5F5",
-				"#2196F3",
-				"#1E88E5",
-				"#1976D2",
-				"#1565C0",
-				"#0D47A1",
-			}
-			if target_color then
-				if target_color == "red" and status_color ~= "blue" then
-					status_color = "blue" -- Để nó chuyển sang đỏ trong câu lệnh if tiếp theo
-				elseif target_color == "blue" and status_color ~= "red" then
-					status_color = "red" -- Để nó chuyển sang xanh trong câu lệnh if tiếp theo
-				end
-			end
-			if status_color == "blue" then
-				anim_colors = {
+			target_color = target_color or "blue"
 
+			-- Force color change on first run by tracking initialized state
+			if not _G.windline_anim_initialized then
+				_G.windline_anim_initialized = true
+			elseif status_color == target_color then
+				return
+			end
+
+			status_color = target_color
+
+			local anim_colors = {}
+			if target_color == "red" then
+				anim_colors = {
 					"#FFEBEE",
 					"#FFCDD2",
 					"#EF9A9A",
@@ -144,9 +138,58 @@ return {
 					"#C62828",
 					"#B71C1C",
 				}
-				status_color = "red"
-			else
-				status_color = "blue"
+			elseif target_color == "magenta" then
+				anim_colors = {
+					"#F3E5F5",
+					"#E1BEE7",
+					"#CE93D8",
+					"#BA68C8",
+					"#AB47BC",
+					"#9C27B0",
+					"#8E24AA",
+					"#7B1FA2",
+					"#6A1B9A",
+					"#4A148C",
+				}
+			elseif target_color == "cyan" then
+				anim_colors = {
+					"#E0F7FA",
+					"#B2EBF2",
+					"#80DEEA",
+					"#4DD0E1",
+					"#26C6DA",
+					"#00BCD4",
+					"#00ACC1",
+					"#0097A7",
+					"#00838F",
+					"#006064",
+				}
+			elseif target_color == "yellow" then
+				anim_colors = {
+					"#FFFDE7",
+					"#FFF9C4",
+					"#FFF59D",
+					"#FFF176",
+					"#FFEE58",
+					"#FFEB3B",
+					"#FDD835",
+					"#FBC02D",
+					"#F9A825",
+					"#F57F17",
+				}
+			else -- blue
+				anim_colors = {
+					"#E3F2FD",
+					"#BBDEFB",
+					"#90CAF9",
+					"#64B5F6",
+					"#42A5F5",
+					"#2196F3",
+					"#1E88E5",
+					"#1976D2",
+					"#1565C0",
+					"#0D47A1",
+				}
 			end
 
 			animation.stop_all()
@@ -179,7 +222,7 @@ return {
 		local wave_left = {
 			text = function()
 				return {
-					{ sep.right_filled .. " ", { "black", "waveleft1" } },
+					{ sep.right_filled .. " ", { "wavedefault", "waveleft1" } },
 					{ sep.right_filled .. " ", { "waveleft1", "waveleft2" } },
 					{ sep.right_filled .. " ", { "waveleft2", "waveleft3" } },
 					{ sep.right_filled .. " ", { "waveleft3", "waveleft4" } },
@@ -198,7 +241,7 @@ return {
 					{ " " .. sep.left_filled, { "waveright3", "waveright2" } },
 					{ " " .. sep.left_filled, { "waveright4", "waveright3" } },
 					{ " " .. sep.left_filled, { "waveright5", "waveright4" } },
-					{ " " .. sep.left_filled, { "black", "waveright5" } },
+					{ " " .. sep.left_filled, { "wavedefault", "waveright5" } },
 				}
 			end,
 			click = change_color,
@@ -255,6 +298,7 @@ return {
 				local symbol = ""
 				return "" .. symbol .. " " .. current_time .. " "
 			end,
+			hl_colors = { "white", "wavedefault" },
 		}
 		local default = {
 			filetypes = { "default" },
@@ -291,10 +335,20 @@ return {
 
 		windline.setup({
 			colors_name = function(colors)
+				-- Làm trong suốt nền thanh trạng thái (statusline)
+				colors.black = "NONE"
+				colors.black_light = "NONE"
+				colors.InactiveBg = "NONE"
+				colors.ActiveBg = "NONE"
+
 				colors.FilenameFg = colors.white
 				colors.FilenameBg = colors.black
 
-				colors.wavedefault = colors.black
+				-- Reverting wave backgrounds to actually evaluate as valid colors in the interpolation engine
+				-- The engine cannot mathematically interpolate between Hex and 'NONE'.
+				-- By letting it calculate against a dark hex, we prevent empty arrows.
+				-- The overall transparency will be forced by Neovim's `StatusLine` bg override below.
+				colors.wavedefault = "#1e1e1e"
 				colors.waveleft1 = colors.wavedefault
 				colors.waveleft2 = colors.wavedefault
 				colors.waveleft3 = colors.wavedefault
@@ -306,6 +360,11 @@ return {
 				colors.waveright3 = colors.wavedefault
 				colors.waveright4 = colors.wavedefault
 				colors.waveright5 = colors.wavedefault
+
+				-- Ghi đè Background gốc của Neovim để đảm bảo trong suốt thực sự
+				vim.api.nvim_set_hl(0, "StatusLine", { bg = "NONE", ctermbg = "NONE" })
+				vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "NONE", ctermbg = "NONE" })
+
 				return colors
 			end,
 			statuslines = {
@@ -317,21 +376,46 @@ return {
 		-- 	change_color()
 		-- end, 500)
 		-- Thêm đoạn này vào cuối config function
-		vim.cmd([[
-  augroup WindlineMode
-    autocmd!
-    autocmd ModeChanged *:i* lua _G.windline_change_color("red")
-    autocmd ModeChanged i:* lua _G.windline_change_color("blue")
-  augroup END
-]])
-		vim.defer_fn(function()
-			if _G.WindLine and _G.WindLine.state then
-				change_color()
-			else
-				vim.defer_fn(function()
-					change_color()
-				end, 200)
+		local get_mode_color = function()
+			local mode = vim.api.nvim_get_mode().mode
+			if mode:match("^i") then
+				return "red"
 			end
-		end, 100)
+			if mode:match("^v") or mode:match("^V") or mode == "\22" then
+				return "magenta"
+			end
+			if mode:match("^R") then
+				return "cyan"
+			end
+			if mode:match("^c") then
+				return "yellow"
+			end
+			return "blue"
+		end
+
+		local function trigger_anim()
+			if vim.bo.filetype == "snacks_dashboard" then
+				return
+			end
+			if _G.WindLine and _G.WindLine.state then
+				_G.windline_change_color(get_mode_color())
+			else
+				-- Retry until Windline state is fully loaded into the global scope
+				vim.defer_fn(trigger_anim, 100)
+			end
+		end
+
+		vim.api.nvim_create_autocmd({ "ModeChanged" }, {
+			group = vim.api.nvim_create_augroup("WindlineSyncMode", { clear = true }),
+			callback = function()
+				trigger_anim()
+			end,
+		})
+		vim.api.nvim_create_autocmd({ "BufWinEnter", "BufEnter" }, {
+			group = vim.api.nvim_create_augroup("WindlineSyncBuf", { clear = true }),
+			callback = function()
+				vim.schedule(trigger_anim)
+			end,
+		})
 	end,
 }
