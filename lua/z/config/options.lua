@@ -42,6 +42,10 @@ opt.splitbelow = true -- split horizontal window to the bottom
 
 -- turn off swapfile
 opt.swapfile = false
+
+-- Persistent Undo
+opt.undofile = true -- enable persistent undo
+opt.undodir = os.getenv("HOME") .. "/.vim/undodir" -- set undo dir
 --24bits
 vim.opt.termguicolors = false
 -- tối ưu hiệu xuất
