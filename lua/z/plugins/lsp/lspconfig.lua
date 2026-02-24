@@ -142,19 +142,22 @@ return {
         -- },
       }
 
-      -- Thiết lập tất cả server (Hỗ trợ Neovim >= 0.11 warning)
+      -- Thiết lập tất cả server thông qua Mason để tự động tải khi mở file
       local is_nvim_0_11 = vim.fn.has("nvim-0.11") == 1
-      for server, config in pairs(servers) do
-        config.capabilities = vim.tbl_deep_extend("force", capabilities, config.capabilities or {})
-        
-        if is_nvim_0_11 then
-          vim.lsp.config[server] = vim.tbl_deep_extend("force", vim.lsp.config[server] or {}, config)
-          vim.lsp.enable(server)
-        else
-          config.on_attach = config.on_attach -- Dùng LspAttach thay thế
-          lspconfig[server].setup(config)
-        end
-      end
+      require("mason-lspconfig").setup_handlers({
+        function(server_name)
+          local config = servers[server_name] or {}
+          config.capabilities = vim.tbl_deep_extend("force", capabilities, config.capabilities or {})
+          
+          if is_nvim_0_11 then
+            vim.lsp.config[server_name] = vim.tbl_deep_extend("force", vim.lsp.config[server_name] or {}, config)
+            vim.lsp.enable(server_name)
+          else
+            config.on_attach = config.on_attach -- Dùng LspAttach thay thế
+            lspconfig[server_name].setup(config)
+          end
+        end,
+      })
     end,
   },
 
