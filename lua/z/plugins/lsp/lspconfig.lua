@@ -2,8 +2,6 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" }, -- Lazy-load khi mở file
-    dependencies = {
-      { "williamboman/mason.nvim" },
       { "nvimdev/lspsaga.nvim", event = "LspAttach" },
       { "ErichDonGubler/lsp_lines.nvim", branch = "main", cond = function() return pcall(require, "lsp_lines") end },
       { "Saghen/blink.cmp", cond = function() return pcall(require, "blink.cmp") end },
@@ -141,24 +139,19 @@ return {
         --   cmd = { "jdtls" },
         --   root_dir = lspconfig.util.root_pattern("gradlew", ".git", "mvnw"),
         -- },
-      }
-
-      -- Thiết lập tất cả server thông qua Mason để tự động tải khi mở file
+      -- Thiết lập tất cả server (Hỗ trợ Neovim >= 0.11 warning)
       local is_nvim_0_11 = vim.fn.has("nvim-0.11") == 1
-      require("mason-lspconfig").setup_handlers({
-        function(server_name)
-          local config = servers[server_name] or {}
-          config.capabilities = vim.tbl_deep_extend("force", capabilities, config.capabilities or {})
-          
-          if is_nvim_0_11 then
-            vim.lsp.config[server_name] = vim.tbl_deep_extend("force", vim.lsp.config[server_name] or {}, config)
-            vim.lsp.enable(server_name)
-          else
-            config.on_attach = config.on_attach -- Dùng LspAttach thay thế
-            lspconfig[server_name].setup(config)
-          end
-        end,
-      })
+      for server, config in pairs(servers) do
+        config.capabilities = vim.tbl_deep_extend("force", capabilities, config.capabilities or {})
+        
+        if is_nvim_0_11 then
+          vim.lsp.config[server] = vim.tbl_deep_extend("force", vim.lsp.config[server] or {}, config)
+          vim.lsp.enable(server)
+        else
+          config.on_attach = config.on_attach -- Dùng LspAttach thay thế
+          lspconfig[server].setup(config)
+        end
+      end
     end,
   },
 
