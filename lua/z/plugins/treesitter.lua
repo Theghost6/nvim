@@ -3,14 +3,20 @@ return {
 		"nvim-treesitter/nvim-treesitter",
     -- event = "VeryLazy",
 		event = { "BufReadPost", "BufNewFile" },
-		build = ":TSUpdate",
+		build = function()
+			local ts_update = require("nvim-treesitter.install").update({ with_sync = true })
+			ts_update()
+		end,
 		dependencies = {
 			"HiPhish/rainbow-delimiters.nvim",
 			"windwp/nvim-ts-autotag",
 		},
 		config = function()
-			-- import nvim-treesitter plugin
-			local treesitter = require("nvim-treesitter.configs")
+			-- import nvim-treesitter plugin safely
+			local status_ok, treesitter = pcall(require, "nvim-treesitter.configs")
+			if not status_ok then
+				return
+			end
 
 			-- configure treesitter
 			treesitter.setup({ -- enable syntax highlighting
