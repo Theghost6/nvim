@@ -18,7 +18,7 @@ return {
 			end
 		end
 
-		vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave" }, {
+		vim.api.nvim_create_autocmd({ "InsertLeave", "FocusLost", "BufLeave" }, {
 			group = augroup,
 			pattern = "*",
 			callback = function(args)
