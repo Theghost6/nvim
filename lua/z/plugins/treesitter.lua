@@ -1,31 +1,19 @@
 return {
+	-- 1. Cài đặt Treesitter
 	{
 		"nvim-treesitter/nvim-treesitter",
-		event = { "BufReadPost", "BufNewFile" },
 		build = ":TSUpdate",
-		dependencies = {
-			"HiPhish/rainbow-delimiters.nvim",
-			"windwp/nvim-ts-autotag",
-		},
+		event = { "BufReadPost", "BufNewFile" },
 		config = function()
-			-- import nvim-treesitter plugin safely
-			local status_ok, treesitter = pcall(require, "nvim-treesitter.configs")
+			-- Dùng pcall để Neovim không bị crash nếu Treesitter chưa tải xong
+			local status_ok, configs = pcall(require, "nvim-treesitter.configs")
 			if not status_ok then
 				return
 			end
 
-			-- configure treesitter
-			treesitter.setup({ -- enable syntax highlighting
-				highlight = {
-					enable = true,
-				},
-				-- enable indentation
+			configs.setup({
+				highlight = { enable = true },
 				indent = { enable = true },
-				-- enable autotagging (w/ nvim-ts-autotag plugin)
-				autotag = {
-					enable = true,
-				},
-				-- ensure these language parsers are installed
 				ensure_installed = {
 					"json",
 					"javascript",
@@ -38,21 +26,67 @@ return {
 					"lua",
 					"vim",
 					"cpp",
-					"cmake",
 					"python",
-					"java",
+					"markdown",
+					"markdown_inline",
+					"query",
+					"vimdoc",
 				},
 				auto_install = true,
-				incremental_selection = {
-					enable = true,
-					keymaps = {
-						init_selection = "<C-space>",
-						node_incremental = "<C-space>",
-						scope_incremental = false,
-						node_decremental = "<bs>",
-					},
-				},
 			})
 		end,
+	},
+
+	-- 2. Cài đặt Rainbow Delimiters độc lập
+	{
+		"HiPhish/rainbow-delimiters.nvim",
+		event = "VeryLazy",
+		config = function()
+			vim.g.rainbow_delimiters = {
+				blacklist = {
+					"noice",
+					"notify",
+					"snacks_notif",
+					"snacks_notif_history",
+					"snacks_picker_input",
+					"snacks_picker_list",
+					"blink-cmp-menu",
+					"nui",
+					"TelescopePrompt",
+				},
+				condition = function(bufnr)
+					local ft = vim.bo[bufnr].ft
+					local blacklist = {
+						["noice"] = true,
+						["notify"] = true,
+						["snacks_notif"] = true,
+						["snacks_notif_history"] = true,
+						["snacks_picker_input"] = true,
+						["snacks_picker_list"] = true,
+						["blink-cmp-menu"] = true,
+						["nui"] = true,
+						["TelescopePrompt"] = true,
+					}
+					if blacklist[ft] then
+						return false
+					end
+
+					-- Only enable if Treesitter parser is available and loaded
+					local lang = vim.treesitter.language.get_lang(ft)
+					if not lang then
+						return false
+					end
+
+					local has_parser, parser = pcall(vim.treesitter.get_parser, bufnr, lang)
+					return has_parser and parser ~= nil
+				end,
+			}
+		end,
+	},
+
+	-- 3. Plugin autotag
+	{
+		"windwp/nvim-ts-autotag",
+		opts = {},
 	},
 }

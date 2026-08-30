@@ -15,10 +15,10 @@ return {
 				LspReferenceText = { underline = true },
 				LspReferenceRead = { underline = true },
 				LspReferenceWrite = { underline = true },
-          Visual = { bg = "#787878" }, -- thêm dòng này
+				Visual = { bg = "#787878" }, -- thêm dòng này
 				GhostText = { fg = "#a9b1d6" }, -- << cập nhật
 			},
-      
+
 			extention = {
 				blinkcmp = true,
 				cmp = true,
@@ -56,7 +56,7 @@ return {
 					buffer = 0,
 					callback = function()
 						for _, client in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
-							if client.supports_method("textDocument/documentHighlight") then
+							if client:supports_method("textDocument/documentHighlight") then
 								vim.lsp.buf.document_highlight()
 								return
 							end
