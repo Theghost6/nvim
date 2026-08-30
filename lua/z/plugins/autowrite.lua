@@ -1,30 +1,30 @@
+-- Tự động lưu file siêu nhẹ (Native Auto-Save không cần plugin ngoài)
 return {
-	"Pocco81/auto-save.nvim",
+	dir = vim.fn.stdpath("config"),
+	name = "native_autosave",
+	event = { "BufReadPost", "BufNewFile" },
 	config = function()
-		require("auto-save").setup({
-			execution_message = {
-				enabled = false, -- tắt thông báo khi tự động lưu
-				message = "",
-			},
-			condition = function(buf)
-				-- Phải kiểm tra buffer còn sống không trước khi sờ vào!
-				if not vim.api.nvim_buf_is_valid(buf) then
-					return false
-				end
+		local augroup = vim.api.nvim_create_augroup("NativeAutoSave", { clear = true })
 
-				-- Bỏ qua file rác, file hệ thống, hoặc buffer không cho phép lưu
-				if vim.bo[buf].modifiable and not vim.bo[buf].readonly then
-					if not vim.tbl_contains({ "terminal", "nofile", "prompt" }, vim.bo[buf].buftype) then
-						if not vim.tbl_contains({ "neo-tree", "TelescopePrompt", "snacks_picker_input", "lazy" }, vim.bo[buf].filetype) then
-							-- Bắt buộc phải có tên file mới được save
-							if vim.fn.bufname(buf) ~= "" then
-								return true 
-							end
-						end
-					end
-				end
-				return false
+		local function save_buffer(buf)
+			if not vim.api.nvim_buf_is_valid(buf) then
+				return
+			end
+			local bo = vim.bo[buf]
+			if bo.modifiable and not bo.readonly and bo.buftype == "" and vim.api.nvim_buf_get_name(buf) ~= "" and vim.api.nvim_get_option_value("modified", { buf = buf }) then
+				vim.api.nvim_buf_call(buf, function()
+					vim.cmd("silent! noautocmd write")
+				end)
+			end
+		end
+
+		vim.api.nvim_create_autocmd({ "FocusLost", "BufLeave" }, {
+			group = augroup,
+			pattern = "*",
+			callback = function(args)
+				save_buffer(args.buf)
 			end,
 		})
 	end,
 }
+

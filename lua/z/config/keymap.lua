@@ -48,57 +48,67 @@ map("i", "<M-l>", "<Right>", opts, { desc = "Move Cursor Right in Insert Mode" }
 
 map("n", "<TAB>", "<cmd>bn<CR>", opts, { desc = "Next Buffer" })
 map("n", "<S-TAB>", "<cmd>bp<CR>", opts, { desc = "Previous Buffer" })
-map("n", "<leader>mh", ":wincmd H<CR>", opts, { "Move Left Buffer" })
-map("n", "<leader>ml", ":wincmd L<CR>", opts, { "move Right Buffer" })
-map("n", "<leader>mj", ":wincmd J<CR>", opts, { "move Down Buffer" })
-map("n", "<leader>mk", ":wincmd K<CR>", opts, { "move Up Buffer" })
+map("n", "<leader>mh", "<cmd>wincmd H<CR>", { desc = "Move Window Left" })
+map("n", "<leader>ml", "<cmd>wincmd L<CR>", { desc = "Move Window Right" })
+map("n", "<leader>mj", "<cmd>wincmd J<CR>", { desc = "Move Window Down" })
+map("n", "<leader>mk", "<cmd>wincmd K<CR>", { desc = "Move Window Up" })
 
-map("n", "<Enter>", "<cmd>nohlsearch<CR>", opts, { desc = "Clear Highlight" })
+map("n", "<Enter>", "<cmd>nohlsearch<CR>", { desc = "Clear Highlight" })
 
-keymap("n", "<F3>", ":RunCode<CR>", opts)
--- keymap("n", "<F3>", [[:term g++ -o %< % && ./%<<CR> ]], opts)
-keymap(
-	"n",
+map("n", "<F3>", "<cmd>RunCode<CR>", { desc = "Run Code" })
+map("n", "<leader>r", "<cmd>RunCode<CR>", { desc = "Run Code" })
+
+map(
+	{ "n", "i" },
 	"<C-f>",
-	"<cmd>lua require('conform').format({ lsp_fallback = true, async = false, timeout_ms = 1000 })<CR>",
-	opts
-)
-keymap(
-	"i",
-	"<C-f>",
-	"<cmd>lua require('conform').format({ lsp_fallback = true, async = false, timeout_ms = 1000 })<CR>",
-	opts
+	function()
+		require("conform").format({ lsp_fallback = true, async = false, timeout_ms = 1000 })
+	end,
+	{ desc = "Format Buffer" }
 )
 
-keymap("n", "<F9>", "<cmd>ToggleTerm size=10 direction=horizontal<cr>", opts)
--- Mở cửa sổ mới
-map("n", "<leader>s", ":split<CR>", opts)
-map("n", "<leader>v", ":vsplit<CR>", opts)
-map("n", "<leader>q", ":close<CR>", opts, { "close split" })
+map("n", "<F9>", "<cmd>ToggleTerm size=10 direction=horizontal<cr>", { desc = "Toggle Terminal" })
 
---close Buffer
-map("n", "<leader>bd", ":bd<CR>", opts, { "Close Buffer" })
--- WhichKey
-map("n", "<leader>w", ":WhichKey<CR>", opts)
-keymap("n", "<leader>rw", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
---nếu mà không clipboard được trong wsl hãy cài thử wl-clipboard
--- Kiểm tra nếu clip.exe tồn tại
-local clip = '/mnt/c/Windows/System32/clip.exe'
+-- Quản lý cửa sổ Split
+map("n", "<leader>s", "<cmd>split<CR>", { desc = "Split Horizontal" })
+map("n", "<leader>v", "<cmd>vsplit<CR>", { desc = "Split Vertical" })
+map("n", "<leader>q", "<cmd>close<CR>", { desc = "Close Split" })
 
-if vim.fn.executable(clip) == 1 then
-  -- Tạo nhóm autocmd để sao chép vào clipboard của Windows
-  vim.api.nvim_create_augroup('WSLYank', { clear = true })
+-- Quản lý Buffer
+map("n", "<leader>bd", "<cmd>bd<CR>", { desc = "Close Current Buffer" })
+map("n", "<leader>bo", "<cmd>%bd|e#|bd#<CR>", { desc = "Close Other Buffers" })
+map("n", "<leader>rw", vim.lsp.buf.rename, { desc = "Smart Rename" })
+map("n", "<leader>?", "<cmd>WhichKey<CR>", { desc = "Show All Keymaps (WhichKey)" })
 
-  vim.api.nvim_create_autocmd('TextYankPost', {
-    group = 'WSLYank',
-    pattern = '*',
-    callback = function()
-      -- Kiểm tra nếu operator là 'y' (yank)
-      if vim.v.event.operator == 'y' then
-        -- Gửi nội dung đã sao chép vào clip.exe
-        vim.fn.system(clip, vim.fn.getreg('"'))
-      end
-    end,
-  })
+-- Cấu hình Clipboard 2 chiều siêu mượt cho WSL
+if vim.fn.has("wsl") == 1 then
+  if vim.fn.executable("win32yank.exe") == 1 then
+    vim.g.clipboard = {
+      name = "win32yank-wsl",
+      copy = {
+        ["+"] = "win32yank.exe -i --crlf",
+        ["*"] = "win32yank.exe -i --crlf",
+      },
+      paste = {
+        ["+"] = "win32yank.exe -o --lf",
+        ["*"] = "win32yank.exe -o --lf",
+      },
+      cache_enabled = 0,
+    }
+  elseif vim.fn.executable("/mnt/c/Windows/System32/clip.exe") == 1 then
+    vim.g.clipboard = {
+      name = "clip-wsl",
+      copy = {
+        ["+"] = "/mnt/c/Windows/System32/clip.exe",
+        ["*"] = "/mnt/c/Windows/System32/clip.exe",
+      },
+      paste = {
+        ["+"] = 'powershell.exe -NoProfile -Command Get-Clipboard',
+        ["*"] = 'powershell.exe -NoProfile -Command Get-Clipboard',
+      },
+      cache_enabled = 0,
+    }
+  end
 end
+
 

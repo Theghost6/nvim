@@ -58,56 +58,34 @@ return {
             { "n", "K", vim.lsp.buf.hover, "Hiển thị tài liệu" },
             { "n", "<leader>rs", ":LspRestart<CR>", "Khởi động lại LSP" },
           }
+          -- Lsp mappings
           for _, map in ipairs(mappings) do
             keymap.set(map[1], map[2], map[3], vim.tbl_extend("force", opts, { desc = map[4] }))
-          end
-
-          -- Eslint sửa lỗi tự động khi save
-          if client and client.name == "eslint" then
-            vim.api.nvim_create_autocmd("BufWritePre", {
-              buffer = bufnr,
-              command = "EslintFixAll",
-            })
           end
         end,
       })
 
-      -- Cấu hình các LSP server
+      -- Cấu hình các LSP server (chỉ Python và Lua)
       local servers = {
-        -- Giữ ts_ls cho React/JavaScript
-        ts_ls = {
-          filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx", "html" },
-          root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
-          single_file_support = true,
-          init_options = {
-            preferences = {
-              disableSuggestions = true,
-              includeCompletionsForModuleExports = true, -- Hỗ trợ module cục bộ
-              includeFileExtensions = { ".jsx", ".js", ".tsx", ".ts" }, -- Nhận diện file JSX
-            },
-          },
-        },
-        eslint = {
-          settings = { workingDirectory = { mode = "auto" }, format = { enable = true }, lintTask = { enable = true } },
-          root_dir = lspconfig.util.root_pattern(".eslintrc", ".eslintrc.js", ".eslintrc.json", "package.json"),
-        },
-        html = {
-          init_options = { configurationSection = { "html", "css", "javascript" }, embeddedLanguages = { css = true, javascript = true }, provideFormatter = true },
-        },
-        cssls = {},
-        stylelint_lsp = {
-          filetypes = { "css", "scss", "less" },
-          root_dir = lspconfig.util.root_pattern(".stylelintrc", ".stylelintrc.json", "package.json"),
-          settings = { stylelintplus = { autoFixOnSave = true, autoFixOnFormat = true } },
-        },
-        -- Giữ emmet_ls cho React
-        emmet_ls = {
-          filetypes = { "css", "html", "javascriptreact", "typescriptreact" },
-          init_options = { html = { options = { ["bem.enabled"] = true } } },
-        },
-        -- Giữ pyright cho Python
+        -- Pyright cho Python (Tự động nhận diện .venv / venv)
         pyright = {
           filetypes = { "python" },
+          before_init = function(_, config)
+            local root = config.root_dir or vim.fn.getcwd()
+            local venv_patterns = {
+              root .. "/.venv/bin/python",
+              root .. "/venv/bin/python",
+              root .. "/.venv/Scripts/python.exe",
+              root .. "/venv/Scripts/python.exe",
+            }
+            for _, path in ipairs(venv_patterns) do
+              if vim.fn.executable(path) == 1 then
+                config.settings.python = config.settings.python or {}
+                config.settings.python.pythonPath = path
+                break
+              end
+            end
+          end,
           settings = {
             python = {
               analysis = {
@@ -118,6 +96,7 @@ return {
             },
           },
         },
+        -- Lua_ls cho Lua & Neovim config
         lua_ls = {
           settings = {
             Lua = {
@@ -132,12 +111,6 @@ return {
             },
           },
         },
-        -- Xóa clangd và jdtls nếu không dùng C/C++ hoặc Java
-        -- clangd = {},
-        -- jdtls = {
-        --   cmd = { "jdtls" },
-        --   root_dir = lspconfig.util.root_pattern("gradlew", ".git", "mvnw"),
-        -- },
       }
 
       -- Thiết lập tất cả server (Hỗ trợ Neovim >= 0.11 warning)

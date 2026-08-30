@@ -15,22 +15,11 @@ return {
 				highlight = { enable = true },
 				indent = { enable = true },
 				ensure_installed = {
-					"json",
-					"javascript",
-					"typescript",
-					"tsx",
-					"yaml",
-					"html",
-					"css",
-					"bash",
 					"lua",
-					"vim",
-					"cpp",
 					"python",
-					"markdown",
-					"markdown_inline",
-					"query",
+					"vim",
 					"vimdoc",
+					"query",
 				},
 				auto_install = true,
 			})
@@ -82,11 +71,5 @@ return {
 				end,
 			}
 		end,
-	},
-
-	-- 3. Plugin autotag
-	{
-		"windwp/nvim-ts-autotag",
-		opts = {},
 	},
 }

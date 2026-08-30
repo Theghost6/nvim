@@ -1,5 +1,5 @@
 return {
-    "nvimtools/none-ls.nvim", -- configure formatters & linters
+    "nvimtools/none-ls.nvim", -- configure linters / diagnostics
     lazy = true,
     dependencies = {
         "jay-babu/mason-null-ls.nvim",
@@ -11,21 +11,13 @@ return {
 
         mason_null_ls.setup({
             ensure_installed = {
-                "prettier", -- prettier formatter
-                "stylua", -- lua formatter
-                "black", -- python formatter
                 "pylint", -- python linter
-                "eslint_d", -- js linter
-                "clang-format",
             },
             automatic_installation = true,
         })
 
         -- for conciseness
-        local formatting = null_ls.builtins.formatting
         local diagnostics = null_ls.builtins.diagnostics
-
-        local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
         null_ls.setup({
             root_dir = null_ls_utils.root_pattern(
@@ -35,40 +27,8 @@ return {
                 "package.json"
             ),
             sources = {
-                formatting.prettier.with({
-                    extra_filetypes = { "svelte" },
-                }),
-                formatting.stylua,
-                formatting.isort,
-                formatting.black,
                 diagnostics.pylint,
-                diagnostics.eslint_d.with({  -- Changed from eslint to eslint_d
-                    condition = function(utils)
-                        return utils.root_has_file({
-                            ".eslintrc.js",
-                            ".eslintrc.cjs",
-                            ".eslintrc.json",
-                        })
-                    end,
-                }),
             },
-            on_attach = function(current_client, bufnr)
-                if current_client.supports_method("textDocument/formatting") then
-                    vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-                    vim.api.nvim_create_autocmd("BufWritePre", {
-                        group = augroup,
-                        buffer = bufnr,
-                        callback = function()
-                            vim.lsp.buf.format({
-                                filter = function(client)
-                                    return client.name == "null-ls"
-                                end,
-                                bufnr = bufnr,
-                            })
-                        end,
-                    })
-                end
-            end,
         })
     end,
 }

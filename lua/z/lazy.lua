@@ -19,10 +19,22 @@ require("lazy").setup({ { import = "z.plugins" }, { import = "z.plugins.lsp" } }
 	},
 	checker = {
 		enabled = true,
-		notify = false, --false
+		notify = false,
 	},
 	change_detection = {
-		notify = false, --false
+		notify = false,
+	},
+	performance = {
+		rtp = {
+			disabled_plugins = {
+				"gzip",
+				"tarPlugin",
+				"tohtml",
+				"tutor",
+				"zipPlugin",
+				"netrwPlugin",
+			},
+		},
 	},
 })
 -- vim.cmd("autocmd VimEnter * lua require('lazy').install()")

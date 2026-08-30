@@ -1,3 +1,8 @@
+-- Tăng tốc độ khởi động bằng Bytecode Cache
+if vim.loader then
+	vim.loader.enable()
+end
+
 require("z.config.options")
 require("z.config.keymap")
 require("z.lazy")

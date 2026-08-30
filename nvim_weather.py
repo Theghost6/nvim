@@ -45,7 +45,7 @@ def get_weather():
         elif code in [71, 73, 75, 77]:
             icon = "❄️"  # Snow
         elif code in [80, 81, 82]:
-            icon = "�️"  # Rain showers
+            icon = "🌧️"  # Rain showers
         elif code in [85, 86]:
             icon = "🌨️"  # Snow showers
         elif code in [95, 96, 99]:

@@ -20,7 +20,7 @@ return {
 				-- },
 				-- },
 			})
-			vim.api.nvim_set_keymap("t", "<Esc>", "<C-\\><C-n>:ToggleTermToggleAll<CR>", { noremap = true })
+			vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit Terminal Mode" })
 		end,
 	},
 }

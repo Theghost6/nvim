@@ -22,23 +22,8 @@ return {
 				blend = 0,
 			},
 			filetype = {
-				java = {
-					"cd $dir &&",
-					"javac $fileName &&",
-					"java $fileNameWithoutExt",
-				},
 				python = "python3 -u",
-				typescript = "deno run",
-				rust = {
-					"cd $dir &&",
-					"rustc $fileName &&",
-					"$dir/$fileNameWithoutExt",
-				},
-				cpp = {
-					"cd $dir &&",
-					"g++ $fileName -o $fileNameWithoutExt &&",
-					"./$fileNameWithoutExt",
-				},
+				lua = "lua",
 			},
 		})
 	end,

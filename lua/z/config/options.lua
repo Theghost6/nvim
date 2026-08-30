@@ -1,5 +1,10 @@
 local opt = vim.opt -- for conciseness
 local g = vim.g -- global variables
+
+-- Thiết lập phím Leader là phím Space (Phím cách)
+g.mapleader = " "
+g.maplocalleader = " "
+
 -- line numbers
 opt.relativenumber = true -- show relative line numbers
 opt.number = true -- shows absolute line number on cursor line (when relative number is on)
@@ -9,6 +14,7 @@ opt.tabstop = 2 -- 2 spaces for tabs (prettier default)
 opt.shiftwidth = 2 -- 2 spaces for indent width
 opt.expandtab = true -- expand tab to spaces
 opt.autoindent = true -- copy indent from current line when starting new one
+opt.smartindent = true -- smart indenting for C-like filetypes
 
 -- line wrapping
 opt.wrap = false -- disable line wrapping
@@ -19,17 +25,10 @@ opt.smartcase = true -- if you include mixed case in your search, assumes you wa
 
 -- cursor line
 opt.cursorline = true -- highlight the current cursor line
---opt.cursorword = false
--- vim.o.guicursor = "n-v-c:block,i-ci:ver25-Cursor,r-cr:hor20-Cursor"
 
--- vim.api.nvim_command("highlight Cursor gui=reverse guifg=NONE guibg=#00ff00")
--- appearance
+-- appearance (24-bit TrueColor)
+opt.termguicolors = true
 
--- turn on termguicolors for nightfly colorscheme to work
--- have to use iterm2 or any other true color terminal
-opt.termguicolors = false
--- Set to false to disable auto format
-vim.g.lazyvim_eslint_auto_format = true
 -- backspace
 opt.backspace = "indent,eol,start" -- allow backspace on indent, end of line or insert mode start position
 
@@ -48,16 +47,10 @@ opt.hidden = true -- allow hidden background buffers without saving
 
 -- Persistent Undo
 opt.undofile = true -- enable persistent undo
-opt.undodir = os.getenv("HOME") .. "/.vim/undodir" -- set undo dir
---24bits
-vim.opt.termguicolors = false
--- tối ưu hiệu xuất
--- opt.lazyredraw = true -- don't redraw while executing macros or other commands
+opt.undodir = vim.fn.stdpath("state") .. "/undo" -- set undo dir cross-platform
+
+-- tối ưu hiệu suất
 opt.updatetime = 250 -- reduce update time for CursorHold events
 opt.timeoutlen = 300 -- time to wait for a mapped sequence to complete (in milliseconds)
-
--- tự động indent
-opt.smartindent = true -- smart indenting for C-like filetypes
-opt.autoindent = true -- copy indent from current line when starting a new line
--- tắt lazydraw 
 opt.lazyredraw = false -- don't redraw while executing macros or other commands
+

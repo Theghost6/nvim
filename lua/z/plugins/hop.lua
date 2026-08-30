@@ -7,28 +7,11 @@ return {
 			keys = "etovxqpdygfblzhckisuran",
 		})
 
-		-- Thiết lập keymap cho tìm từ
-		vim.api.nvim_set_keymap(
-			"n",
-			"<leader>w",
-			"<cmd>lua require('hop').hint_words()<cr>",
-			{ noremap = true, silent = true }
-		)
+		local map = vim.keymap.set
+		local hop = require("hop")
 
-		-- Thiết lập keymap cho tìm dòng
-		vim.api.nvim_set_keymap(
-			"n",
-			"<leader>l",
-			"<cmd>lua require('hop').hint_lines()<cr>",
-			{ noremap = true, silent = true }
-		)
-
-		-- Thiết lập keymap cho tìm ký tự
-		vim.api.nvim_set_keymap(
-			"n",
-			"<leader><leader>",
-			"<cmd>lua require('hop').hint_char1()<cr>",
-			{ noremap = true, silent = true }
-		)
+		map("n", "<leader>w", function() hop.hint_words() end, { desc = "Hop to Word" })
+		map("n", "<leader>l", function() hop.hint_lines() end, { desc = "Hop to Line" })
+		map("n", "<leader><leader>", function() hop.hint_char1() end, { desc = "Hop to Char" })
 	end,
 }

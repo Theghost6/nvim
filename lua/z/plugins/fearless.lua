@@ -260,9 +260,10 @@ return {
 				weather_time = now
 
 				-- Sử dụng script Python nội bộ gọi API cực nhanh của Open-Meteo
-				local script_path = vim.fn.expand("~/.config/nvim/nvim_weather.py")
+				local script_path = vim.fn.stdpath("config") .. "/nvim_weather.py"
+				local python_cmd = vim.fn.executable("python3") == 1 and "python3" or "python"
 
-				vim.fn.jobstart({ "python3", script_path }, {
+				vim.fn.jobstart({ python_cmd, script_path }, {
 					stdout_buffered = true,
 					on_stdout = function(_, data)
 						if data and data[1] and data[1] ~= "" then
